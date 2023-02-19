@@ -17,6 +17,7 @@ return {
       "html",
       "javascript",
       "json",
+      "jsonc",
       "lua",
       "python",
       "regex",
