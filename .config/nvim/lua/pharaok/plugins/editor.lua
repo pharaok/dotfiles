@@ -7,48 +7,18 @@ return {
     cmd = "Telescope",
     keys = function()
       return {
-        {
-          "<Leader>:",
-          function()
-            require("telescope.builtin").commands()
-          end,
-        },
-        {
-          "<Leader><Space>",
-          function()
-            require("telescope.builtin").find_files()
-          end,
-        },
+        { "<Leader>:", "<Cmd>Telescope commands<CR>" },
+        { "<Leader><Space>", "<Cmd>Telescope find_files<CR>" },
         {
           "<Leader><Tab>",
           function()
             require("telescope.builtin").buffers({ sort_lastused = true })
           end,
         },
-        {
-          "<Leader>ff",
-          function()
-            require("telescope.builtin").find_files()
-          end,
-        },
-        {
-          "<Leader>fg",
-          function()
-            require("telescope.builtin").live_grep()
-          end,
-        },
-        {
-          "<Leader>fo",
-          function()
-            require("telescope.builtin").oldfiles()
-          end,
-        },
-        {
-          "<Leader>cs",
-          function()
-            require("telescope.builtin").colorscheme()
-          end,
-        },
+        { "<Leader>ff", "<Cmd>Telescope find_files<CR>" },
+        { "<Leader>fg", "<Cmd>Telescope live_grep<CR>" },
+        { "<Leader>fo", "<Cmd>Telescope oldfiles<CR>" },
+        { "<Leader>cs", "<Cmd>Telescope colorscheme<CR>" },
       }
     end,
     config = function()
