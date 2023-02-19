@@ -24,13 +24,10 @@ end
 
 return {
   {
-    "williamboman/mason.nvim",
-    config = true,
-  },
-
-  {
     "neovim/nvim-lspconfig",
     dependencies = {
+      { "williamboman/mason.nvim", cmd = "Mason", config = true },
+      "williamboman/mason-lspconfig.nvim",
       {
         "hrsh7th/cmp-nvim-lsp",
         cond = function()
@@ -39,85 +36,92 @@ return {
       },
       { "folke/neoconf.nvim", config = true },
       { "folke/neodev.nvim", config = true },
-      "b0o/SchemaStore.nvim",
+      {
+        "simrat39/rust-tools.nvim",
+        cond = function()
+          return require("mason-registry").is_installed("rust-analyzer")
+        end,
+      },
+      {
+        "jose-elias-alvarez/typescript.nvim",
+        cond = function()
+          return require("mason-registry").is_installed("typescript-language-server")
+        end,
+      },
+      {
+        "b0o/SchemaStore.nvim",
+        cond = function()
+          return require("mason-registry").is_installed("json-lsp")
+        end,
+      },
     },
     cmd = "Neoconf",
     event = "BufReadPre",
     config = function()
       local lspconfig = require("lspconfig")
+      local mlsp = require("mason-lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-      for _, server in ipairs({
+      mlsp.setup({ ensure_installed = {
         "lua_ls",
-        "pylsp",
-        "html",
-        "cssls",
-        "tailwindcss",
-        "emmet_ls",
-        "dockerls",
-      }) do
-        lspconfig[server].setup({ on_attach = on_attach, capabilities = capabilities })
-      end
-      lspconfig.jsonls.setup({
-        settings = {
-          json = {
-            schemas = require("schemastore").json.schemas(),
-            validate = { enable = true },
-          },
-        },
+        "vimls",
+      } })
+      mlsp.setup_handlers({
+        function(server)
+          lspconfig[server].setup({ on_attach = on_attach, capabilities = capabilities })
+        end,
+        ["jsonls"] = function()
+          lspconfig.jsonls.setup({
+            on_attach = on_attach,
+            capabilities = capabilities,
+            settings = {
+              json = {
+                schemas = require("schemastore").json.schemas(),
+                validate = { enable = true },
+              },
+            },
+          })
+        end,
+        ["rust_analyzer"] = function()
+          require("rust-tools").setup({ server = { on_attach = on_attach, capabilities = capabilities } })
+        end,
+        ["tsserver"] = function()
+          require("typescript").setup({ server = { on_attach = on_attach, capabilities = capabilities } })
+        end,
       })
     end,
-  },
-  {
-    "simrat39/rust-tools.nvim",
-    dependencies = {
-      {
-        "hrsh7th/cmp-nvim-lsp",
-        cond = function()
-          return require("pharaok.util").has("nvim-cmp")
-        end,
-      },
-    },
-    opts = function()
-      local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
-      return { server = { on_attach = on_attach, capabilities = capabilities } }
-    end,
-    ft = "rust",
-  },
-  {
-    "jose-elias-alvarez/typescript.nvim",
-    dependencies = {
-      {
-        "hrsh7th/cmp-nvim-lsp",
-        cond = function()
-          return require("pharaok.util").has("nvim-cmp")
-        end,
-      },
-    },
-    opts = function()
-      local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
-      return { server = { on_attach = on_attach, capabilities = capabilities } }
-    end,
-    ft = { "html", "javascript", "javascriptreact", "typescript", "typescriptreact" },
   },
 
   {
     "jose-elias-alvarez/null-ls.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "williamboman/mason.nvim",
+      {
+        "jose-elias-alvarez/typescript.nvim",
+        cond = function()
+          return require("mason-registry").is_installed("typescript-language-server")
+        end,
+      },
+    },
     event = "BufReadPre",
     config = function()
       local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
       local null_ls = require("null-ls")
+
+      local sources = {
+        null_ls.builtins.formatting.stylua,
+        null_ls.builtins.formatting.prettierd,
+        null_ls.builtins.formatting.eslint_d,
+        null_ls.builtins.formatting.rustfmt,
+        null_ls.builtins.formatting.black,
+      }
+      if require("pharaok.util").has("typescript.nvim") then
+        table.insert(sources, require("typescript.extensions.null-ls.code-actions"))
+      end
+
       null_ls.setup({
-        sources = {
-          -- null_ls.builtins.completion.spell,
-          null_ls.builtins.formatting.stylua,
-          null_ls.builtins.formatting.prettierd,
-          null_ls.builtins.formatting.eslint_d,
-          null_ls.builtins.formatting.rustfmt,
-          null_ls.builtins.formatting.black,
-          require("typescript.extensions.null-ls.code-actions"),
-        },
+        sources = sources,
         on_attach = function(client, bufnr)
           if client.supports_method("textDocument/formatting") then
             vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
