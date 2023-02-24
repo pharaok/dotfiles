@@ -16,11 +16,11 @@ return {
     cmd = "Gitsigns",
     init = function()
       vim.api.nvim_create_autocmd("BufEnter", {
-        callback = function(e)
+        once = true,
+        callback = function()
           vim.fn.system({ "git", "ls-files", "--error-unmatch", vim.fn.expand("%") })
           if vim.v.shell_error == 0 then
             require("gitsigns")
-            vim.api.nvim_del_autocmd(e.id)
           end
         end,
       })

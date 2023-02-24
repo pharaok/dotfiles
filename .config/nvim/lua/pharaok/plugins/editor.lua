@@ -48,11 +48,11 @@ return {
       end
 
       vim.api.nvim_create_autocmd("BufEnter", {
+        once = true,
         callback = function(e)
           local stat = vim.loop.fs_stat(e.file)
           if stat and stat.type == "directory" then
             require("neo-tree")
-            vim.api.nvim_del_autocmd(e.id)
           end
         end,
       })
