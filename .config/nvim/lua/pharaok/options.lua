@@ -19,12 +19,6 @@ opt.splitright = true
 
 opt.termguicolors = true
 
--- vim.api.nvim_create_autocmd("TermOpen", {
---   callback = function()
---     vim.cmd.startinsert()
---   end,
--- })
-
 vim.diagnostic.config({ virtual_text = false })
 vim.api.nvim_create_autocmd("CursorHold", {
   callback = function()
