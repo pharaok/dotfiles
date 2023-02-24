@@ -3,6 +3,12 @@ return {
     "mfussenegger/nvim-dap",
     dependencies = {
       {
+        "mfussenegger/nvim-dap-python",
+        config = function()
+          require("dap-python").setup(vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python")
+        end,
+      },
+      {
         "rcarriga/nvim-dap-ui",
         name = "dapui",
         config = true,
@@ -60,12 +66,6 @@ return {
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
       end
-    end,
-  },
-  {
-    "mfussenegger/nvim-dap-python",
-    config = function()
-      require("dap-python").setup(vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python")
     end,
   },
 }
