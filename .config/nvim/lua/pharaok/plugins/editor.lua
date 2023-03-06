@@ -63,7 +63,7 @@ return {
         function()
           require("neo-tree.command").execute({
             toggle = true,
-            dir = util.root_dir(),
+            -- dir = util.root_dir(),
           })
         end,
         desc = "NeoTree",
@@ -87,8 +87,7 @@ return {
     "akinsho/toggleterm.nvim",
     -- version = "*",
     dependencies = {
-      "pharaok/stickybuf.nvim",
-      opts = { buftype = { help = false } },
+      { "stevearc/stickybuf.nvim", config = true },
     },
     keys = function(plugin)
       return { plugin.opts.open_mapping }
@@ -99,11 +98,13 @@ return {
       open_mapping = "<C-\\>",
       on_create = function(t)
         t:send('alias nvim="command nvim --server ' .. vim.v.servername .. ' --remote"')
-        require("stickybuf").pin_filetype(false, function()
-          vim.wo.winhighlight = ""
-          vim.wo.number = vim.go.number
-          vim.wo.relativenumber = vim.go.relativenumber
-        end)
+        require("stickybuf").pin(t.window, {
+          restore_callback = function()
+            vim.wo.winhighlight = ""
+            vim.wo.number = vim.go.number
+            vim.wo.relativenumber = vim.go.relativenumber
+          end,
+        })
       end,
       on_open = function(t)
         vim.cmd([[ startinsert ]])
