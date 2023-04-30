@@ -3,7 +3,9 @@ return {
     "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
-    config = function()
+    opts = { transparent = true, styles = { sidebars = "transparent" } },
+    config = function(_, opts)
+      require("tokyonight").setup(opts)
       vim.cmd([[ colorscheme tokyonight ]])
     end,
   },
@@ -13,18 +15,16 @@ return {
   { "tpope/vim-fugitive", cmd = { "G", "Git" } },
   {
     "lewis6991/gitsigns.nvim",
-    cmd = "Gitsigns",
-    init = function()
-      vim.api.nvim_create_autocmd("BufEnter", {
-        once = true,
-        callback = function()
-          vim.fn.system({ "git", "ls-files", "--error-unmatch", vim.fn.expand("%") })
-          if vim.v.shell_error == 0 then
-            require("gitsigns")
-          end
-        end,
-      })
-    end,
     opts = { current_line_blame = true },
+  },
+
+  {
+    "glacambre/firenvim",
+
+    cond = not not vim.g.started_by_firenvim,
+    build = function()
+      require("lazy").load({ plugins = "firenvim", wait = true })
+      vim.fn["firenvim#install"](0)
+    end,
   },
 }
