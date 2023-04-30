@@ -35,18 +35,31 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-tree/nvim-web-devicons",
       "MunifTanjim/nui.nvim",
-      "neovim/nvim-lspconfig", -- root_pattern
+      {
+        "s1n7ax/nvim-window-picker",
+        -- tag = "v1.*",
+        config = function()
+          require("window-picker").setup({
+            selection_chars = "TNSERIAO",
+            -- filter_rules = {
+            --   bo = {
+            --     buftype = { "quickfix", "terminal" },
+            --   },
+            -- },
+          })
+        end,
+      },
     },
     cmd = "Neotree",
     init = function()
       vim.g.neo_tree_remove_legacy_commands = 1
+
       if vim.fn.argc() == 1 then
         local stat = vim.loop.fs_stat(vim.fn.argv(0))
         if stat and stat.type == "directory" then
           require("neo-tree")
         end
       end
-
       vim.api.nvim_create_autocmd("BufEnter", {
         once = true,
         callback = function(e)
@@ -63,16 +76,13 @@ return {
         function()
           require("neo-tree.command").execute({
             toggle = true,
-            -- dir = util.root_dir(),
           })
         end,
         desc = "NeoTree",
       },
     },
     opts = {
-      window = {
-        width = 32,
-      },
+      window = { width = 32 },
       filesystem = {
         filtered_items = {
           visible = true,
@@ -87,7 +97,7 @@ return {
     "akinsho/toggleterm.nvim",
     -- version = "*",
     dependencies = {
-      { "stevearc/stickybuf.nvim", config = true },
+      { "stevearc/stickybuf.nvim", dependencies = { "s1n7ax/nvim-window-picker" }, config = true },
     },
     keys = function(plugin)
       return { plugin.opts.open_mapping }
@@ -96,8 +106,10 @@ return {
       start_in_insert = false,
       shading_factor = "-10",
       open_mapping = "<C-\\>",
+      ---@param t Terminal
       on_create = function(t)
-        t:send('alias nvim="command nvim --server ' .. vim.v.servername .. ' --remote"')
+        local server = "command nvim --server " .. vim.v.servername
+        t:send('alias nvim="' .. server .. " --remote-send '<Cmd>:stopinsert<CR>' && " .. server .. ' --remote"')
         require("stickybuf").pin(t.window, {
           restore_callback = function()
             vim.wo.winhighlight = ""
@@ -139,6 +151,7 @@ return {
   {
     "folke/todo-comments.nvim",
     dependencies = "nvim-lua/plenary.nvim",
+    event = "BufReadPre",
     keys = {
       {
         "<Leader>xt",
