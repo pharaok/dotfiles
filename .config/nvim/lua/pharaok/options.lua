@@ -18,6 +18,9 @@ opt.splitbelow = true
 opt.splitright = true
 
 opt.termguicolors = true
+vim.g.transparent = true
+
+opt.exrc = true
 
 vim.diagnostic.config({ virtual_text = false })
 vim.api.nvim_create_autocmd("CursorHold", {
