@@ -62,7 +62,7 @@ return {
           ["<C-e>"] = cmp.mapping.abort(),
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
         }),
-        formatting = { format = lspkind.cmp_format() },
+        formatting = { format = lspkind.cmp_format({ mode = vim.g.icons and "symbol" or "text" }) },
       }
     end,
     config = function(_, opts)

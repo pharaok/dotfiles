@@ -1,12 +1,17 @@
 return {
+  { "nvim-tree/nvim-web-devicons", cond = vim.g.icons },
   {
     "akinsho/bufferline.nvim",
     version = "v3.*",
-    dependencies = "nvim-tree/nvim-web-devicons",
+    -- dependencies = "nvim-tree/nvim-web-devicons",
+    cond = not vim.g.started_by_firenvim,
     event = "VeryLazy",
     opts = {
       options = {
         diagnostics = "nvim_lsp",
+        buffer_close_icon = vim.g.icons and nil or "x",
+        close_icon = vim.g.icons and nil or "X",
+        show_buffer_icons = not vim.g.icons,
         offsets = {
           {
             filetype = "neo-tree",
@@ -20,7 +25,7 @@ return {
   },
   {
     "nvim-lualine/lualine.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    -- dependencies = "nvim-tree/nvim-web-devicons",
     event = "VeryLazy",
     init = function()
       -- vim.fn.jobstart({
@@ -46,48 +51,33 @@ return {
       --   end,
       -- })
     end,
-    opts = {
-      sections = {
-        lualine_x = {
-          -- {
-          --   "g:cpu_usage",
-          --   fmt = function(n)
-          --     return n .. "%%"
-          --   end,
-          --   cond = function()
-          --     return vim.g.cpu_usage > 0
-          --   end,
-          --   color = function()
-          --     local fg
-          --     if not vim.g.cpu_usage then
-          --       fg = "#ffffff"
-          --       return { fg = fg }
-          --     end
-          --     if vim.g.cpu_usage < 20 then
-          --       fg = "#ffff00"
-          --     elseif vim.g.cpu_usage < 40 then
-          --       fg = "#ffaa00"
-          --     elseif vim.g.cpu_usage < 60 then
-          --       fg = "#ff7700"
-          --     else
-          --       fg = "#ff1100"
-          --     end
-          --     return { fg = fg }
-          --   end,
-          -- },
-          {
-            require("lazy.status").updates,
-            cond = require("lazy.status").has_updates,
-            color = { fg = "#ff9e64" },
+    opts = function()
+      local opts = {
+        options = {
+          icons_enabled = vim.g.icons,
+        },
+        sections = {
+          lualine_x = {
+            {
+              require("lazy.status").updates,
+              cond = function()
+                return (not vim.g.started_by_firenvim) and require("lazy.status").has_updates()
+              end,
+              color = { fg = "#ff9e64" },
+            },
           },
         },
-      },
-    },
+      }
+      if not vim.g.icons then
+        opts = vim.tbl_deep_extend("force", opts, { options = { component_separators = "", section_separators = "" } })
+      end
+      return opts
+    end,
   },
   {
     "rcarriga/nvim-notify",
     event = "VeryLazy",
-    opts = { top_down = false, background_colour = "#000000" },
+    opts = { top_down = false, background_colour = vim.g.transparent and "#24283b" or nil },
     config = function(_, opts)
       require("notify").setup(opts)
       vim.notify = require("notify")

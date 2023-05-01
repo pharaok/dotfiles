@@ -35,7 +35,42 @@ return {
       vim.fn["firenvim#install"](0)
     end,
     config = function()
+      vim.g.firenvim_config = {
+        localSettings = {
+          [".*"] = {
+            cmdline = "neovim",
+            priority = 0,
+            takeover = "never",
+          },
+        },
+      }
+
       vim.g.transparent = false
+      vim.g.icons = false
+
+      -- HACK: Avert your eyes
+      vim.cmd([[ 
+        function LeetcodeSetFileType(result)
+          call v:lua.LeetcodeSetFileType(a:result)
+        endfunction
+      ]])
+      LeetcodeSetFileType = function(result)
+        result = result:sub(2, result:len() - 1):lower()
+        local name_to_ft = {
+          python3 = "python",
+        }
+        local ft = name_to_ft[result] or result
+        vim.bo.filetype = ft
+      end
+
+      vim.api.nvim_create_autocmd("BufEnter", {
+        pattern = "leetcode.com_problems*.txt",
+        callback = function()
+          local eval_js = vim.fn["firenvim#eval_js"]
+
+          eval_js([[document.getElementById("headlessui-listbox-button-:r2r:").innerText]], "LeetcodeSetFileType")
+        end,
+      })
     end,
   },
 }
