@@ -3,6 +3,8 @@ local opt = vim.opt
 opt.timeoutlen = 500
 
 opt.number = true
+opt.cursorline = true
+opt.cursorlineopt = "number"
 opt.relativenumber = true
 opt.colorcolumn = { 80, 120 }
 opt.scrolloff = 10

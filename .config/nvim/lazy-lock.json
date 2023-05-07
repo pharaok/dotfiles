@@ -9,7 +9,7 @@
   "cmp-path": { "branch": "main", "commit": "91ff86cd9c29299a64f968ebb45846c485725f23" },
   "cmp_luasnip": { "branch": "master", "commit": "18095520391186d634a0045dacaa346291096566" },
   "dapui": { "branch": "master", "commit": "286f682f366fbc652b38dff893569374e9433dd3" },
-  "firenvim": { "branch": "master", "commit": "ee4ef314bd990b2b05b7fbd95b857159e444a2fe" },
+  "firenvim": { "branch": "master", "commit": "a96710eaf6e6c2de78341c32d8dc7b39727ad54c" },
   "gitsigns.nvim": { "branch": "main", "commit": "e5edefd9976039f5352e0c900f35206770b33a2d" },
   "gruvbox.nvim": { "branch": "main", "commit": "df149bccb19a02c5c2b9fa6ec0716f0c0487feb0" },
   "lazy.nvim": { "branch": "main", "commit": "bb5cc9ef3bbb17541929b745f74551c900188099" },
