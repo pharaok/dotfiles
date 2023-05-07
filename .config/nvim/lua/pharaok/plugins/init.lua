@@ -23,10 +23,28 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     opts = { current_line_blame = true },
+    cmd = "Gitsigns",
+    init = function()
+      local augroup = vim.api.nvim_create_augroup("GitsignsLazy", {})
+      vim.api.nvim_create_autocmd("BufEnter", {
+        group = augroup,
+        callback = function(event)
+          if event.file == "" then
+            return
+          end
+          vim.fn.system("git ls-files --error-unmatch " .. event.file)
+          if vim.v.shell_error == 0 then
+            require("gitsigns")
+            vim.api.nvim_del_augroup_by_id(augroup)
+          end
+        end,
+      })
+    end,
   },
 
   {
     "glacambre/firenvim",
+    version = "*",
     lazy = false,
     priority = 2000,
     cond = not not vim.g.started_by_firenvim,
