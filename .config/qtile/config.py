@@ -4,11 +4,11 @@ import subprocess
 from libqtile import hook, layout
 from libqtile.config import Click, Drag, Match
 from libqtile.lazy import lazy
-
 from modules import (extension_defaults, groups, init_screens, keys,
                      widget_defaults)
 from modules.colors import background2, primary
 from modules.keys import mod
+from modules.dynamic_matrix import DynamicMatrix
 
 
 @hook.subscribe.startup_once
@@ -28,7 +28,7 @@ layout_options = {
 layouts = [
     layout.MonadTall(**layout_options),
     layout.MonadWide(**layout_options),
-    layout.Matrix(**layout_options),
+    DynamicMatrix(**{**layout_options, "margin": 1}),
     layout.Max(),
 ]
 

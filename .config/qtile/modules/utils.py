@@ -36,7 +36,7 @@ class LayoutToggler:
 
 
 class WindowMatcher:
-    def __init__(self, name, group):
+    def __init__(self, name: str, group: str):
         self.name = name
         self.group = group
         self.rename_count = defaultdict(int)
@@ -117,7 +117,7 @@ def lazy_move(direction: Direction):
 
 
 @lazy.function
-def lazy_shuffle(qtile, direction: Direction):
+def lazy_shuffle(qtile: Qtile, direction: Direction):
     if (
         qtile.current_layout.name in ["monadtall", "monadwide"]
         and qtile.current_layout.clients.current_index == 0
@@ -131,12 +131,12 @@ def lazy_shuffle(qtile, direction: Direction):
         if direction == main_direction:
             qtile.current_layout.cmd_flip()
             return
-
-    getattr(qtile.current_layout, f"cmd_shuffle_{direction}")()
+    else:
+        getattr(qtile.current_layout, f"cmd_shuffle_{direction}")()
 
 
 @lazy.function
-def lazy_grow(qtile, direction: Direction):
+def lazy_grow(qtile: Qtile, direction: Direction):
     if qtile.current_layout.name in ["monadtall", "monadwide"]:
         if qtile.current_layout.name == "monadwide":
             direction = rotate_ccw(direction)
@@ -150,7 +150,9 @@ def lazy_grow(qtile, direction: Direction):
             qtile.current_layout.cmd_grow_main()
         elif direction == "left":
             qtile.current_layout.cmd_shrink_main()
-        elif direction == "up":
+        elif direction == "down":
             qtile.current_layout.cmd_grow()
         else:
             qtile.current_layout.cmd_shrink()
+    else:
+        getattr(qtile.current_layout, f"cmd_grow_{direction}")()
