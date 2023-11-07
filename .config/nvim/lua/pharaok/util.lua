@@ -12,4 +12,17 @@ function M.has(plugin)
   return require("lazy.core.config").plugins[plugin] ~= nil
 end
 
+function M.str_split(str, delim)
+  if delim == nil then
+    delim = "\n"
+  end
+  local segments = {}
+  local i = 1
+  for segment in str:gmatch("([^" .. delim .. "]+)") do
+    segments[i] = segment
+    i = i + 1
+  end
+  return segments
+end
+
 return M

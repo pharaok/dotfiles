@@ -66,12 +66,6 @@ return {
       vim.g.transparent = false
       vim.g.icons = false
 
-      -- HACK: Avert your eyes
-      vim.cmd([[ 
-        function LeetcodeSetFileType(result)
-          call v:lua.LeetcodeSetFileType(a:result)
-        endfunction
-      ]])
       LeetcodeSetFileType = function(result)
         result = result:sub(2, result:len() - 1):lower()
         local name_to_ft = {
@@ -80,13 +74,34 @@ return {
         local ft = name_to_ft[result] or result
         vim.bo.filetype = ft
       end
+      vim.cmd([[ 
+        function LeetcodeSetFileType(result)
+          call v:lua.LeetcodeSetFileType(a:result)
+        endfunction
+      ]])
 
-      vim.api.nvim_create_autocmd("BufEnter", {
+      local imports = { "from typing import List, Dict", "import math", "import heapq", "import collections", "", "" }
+
+      vim.api.nvim_create_autocmd("BufAdd", {
         pattern = "leetcode.com_problems*.txt",
-        callback = function()
+        callback = function(event)
           local eval_js = vim.fn["firenvim#eval_js"]
+          eval_js([[document.querySelector("button[id^=headlessui-listbox-button]").innerText]], "LeetcodeSetFileType")
 
-          eval_js([[document.getElementById("headlessui-listbox-button-:r2r:").innerText]], "LeetcodeSetFileType")
+          vim.api.nvim_buf_set_lines(event.buf, 0, 0, false, imports)
+        end,
+      })
+
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        pattern = "leetcode.com_problems*.txt",
+        callback = function(event)
+          vim.api.nvim_buf_set_lines(event.buf, 0, #imports, false, {})
+        end,
+      })
+      vim.api.nvim_create_autocmd("BufWritePost", {
+        pattern = "leetcode.com_problems*.txt",
+        callback = function(event)
+          vim.api.nvim_buf_set_lines(event.buf, 0, 0, false, imports)
         end,
       })
     end,

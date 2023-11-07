@@ -28,6 +28,44 @@ return {
         mode = { "i", "s" },
       },
     },
+    config = function()
+      local luasnip = require("luasnip")
+      local clear_session = function(event)
+        if not luasnip.session.jump_active then
+          while luasnip.session.current_nodes[event.buf] do
+            luasnip.unlink_current()
+          end
+        end
+      end
+      vim.api.nvim_create_autocmd("ModeChanged", {
+        pattern = { "s:n", "i:*" },
+        callback = clear_session,
+      })
+      -- https://github.com/L3MON4D3/LuaSnip/issues/747
+      -- vim.api.nvim_create_autocmd("CursorMovedI", {
+      --   pattern = "*",
+      --   callback = function(event)
+      --     local current_node = luasnip.session.current_nodes[event.buf]
+      --     if not luasnip.session or not current_node or luasnip.session.jump_active then
+      --       return
+      --     end
+      --     print(vim.inspect(current_node))
+      --     local current_start, current_end = current_node.get_buf_position()
+      --     current_start[1] = current_start[1] + 1 -- (1, 0) indexed
+      --     current_end[1] = current_end[1] + 1 -- (1, 0) indexed
+      --     local cursor = vim.api.nvim_win_get_cursor(0)
+      --
+      --     if
+      --       cursor[1] < current_start[1]
+      --       or cursor[1] > current_end[1]
+      --       or cursor[2] < current_start[2]
+      --       or cursor[2] > current_end[2]
+      --     then
+      --       luasnip.unlink_current()
+      --     end
+      --   end,
+      -- })
+    end,
   },
   {
     "hrsh7th/nvim-cmp",
@@ -85,7 +123,14 @@ return {
     end,
   },
 
-  { "numToStr/Comment.nvim", event = { "BufReadPre" }, config = true },
+  {
+    "numToStr/Comment.nvim",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    event = { "BufReadPre" },
+    opts = function()
+      return { pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook() }
+    end,
+  },
   {
     "windwp/nvim-autopairs",
     event = { "BufReadPre" },
