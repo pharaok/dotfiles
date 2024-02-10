@@ -30,9 +30,9 @@ return {
       "williamboman/mason-lspconfig.nvim",
       {
         "hrsh7th/cmp-nvim-lsp",
-        cond = function()
-          return require("pharaok.util").has("nvim-cmp")
-        end,
+        -- cond = function()
+        --   return require("pharaok.util").has("nvim-cmp")
+        -- end,
       },
       { "folke/neoconf.nvim", config = true },
       { "folke/neodev.nvim", config = true },
@@ -93,7 +93,7 @@ return {
   },
 
   {
-    "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "williamboman/mason.nvim",
@@ -141,6 +141,19 @@ return {
           end
         end,
       })
+    end,
+  },
+  {
+    "lervag/vimtex",
+    lazy = false,
+    init = function()
+      vim.g.tex_flavor = "latex"
+      vim.g.vimtex_view_method = "zathura"
+      vim.g.maplocalleader = " "
+      vim.g.vimtex_quickfix_mode = 0
+      vim.o.conceallevel = 2
+      -- vim.g.tex_conceal = "abmgs"
+      vim.g.vimtex_syntax_conceal = { math_bounds = 0 }
     end,
   },
 }

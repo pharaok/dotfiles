@@ -1,18 +1,10 @@
 return {
   {
     "L3MON4D3/LuaSnip",
-    version = "1.*",
+    version = "v2.*",
+    lazy = false,
     build = "make install_jsregexp",
     keys = {
-      -- {
-      --   "<Tab>",
-      --   function()
-      --     return require("luasnip").expand_or_jumpable(1) and "<Plug>luasnip-jump-next" or "<Tab>"
-      --   end,
-      --   expr = true,
-      --   silent = true,
-      --   mode = "i",
-      -- },
       {
         "<Tab>",
         function()
@@ -29,11 +21,17 @@ return {
       },
     },
     config = function()
-      local luasnip = require("luasnip")
+      local ls = require("luasnip")
+      ls.config.set_config({
+        update_events = "TextChanged,TextChangedI",
+        enable_autosnippets = true,
+      })
+      require("luasnip.loaders.from_lua").lazy_load({ paths = "./lua/pharaok/snippets" })
+
       local clear_session = function(event)
-        if not luasnip.session.jump_active then
-          while luasnip.session.current_nodes[event.buf] do
-            luasnip.unlink_current()
+        if not ls.session.jump_active then
+          while ls.session.current_nodes[event.buf] do
+            ls.unlink_current()
           end
         end
       end
@@ -41,6 +39,7 @@ return {
         pattern = { "s:n", "i:*" },
         callback = clear_session,
       })
+
       -- https://github.com/L3MON4D3/LuaSnip/issues/747
       -- vim.api.nvim_create_autocmd("CursorMovedI", {
       --   pattern = "*",
@@ -89,7 +88,7 @@ return {
         },
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
-          { name = "buffer" },
+          -- { name = "buffer" },
           { name = "path" },
           { name = "luasnip" },
         }),
