@@ -43,7 +43,8 @@ return {
         end,
       },
       {
-        "jose-elias-alvarez/typescript.nvim",
+        "pmizio/typescript-tools.nvim",
+        dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
         cond = function()
           return require("mason-registry").is_installed("typescript-language-server")
         end,
@@ -86,7 +87,7 @@ return {
           require("rust-tools").setup({ server = { on_attach = on_attach, capabilities = capabilities } })
         end,
         ["tsserver"] = function()
-          require("typescript").setup({ server = { on_attach = on_attach, capabilities = capabilities } })
+          require("typescript-tools").setup({ on_attach = on_attach })
         end,
       })
     end,
@@ -97,12 +98,12 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "williamboman/mason.nvim",
-      {
-        "jose-elias-alvarez/typescript.nvim",
-        cond = function()
-          return require("mason-registry").is_installed("typescript-language-server")
-        end,
-      },
+      -- {
+      --   "jose-elias-alvarez/typescript.nvim",
+      --   cond = function()
+      --     return require("mason-registry").is_installed("typescript-language-server")
+      --   end,
+      -- },
     },
     event = "BufReadPre",
     config = function()
@@ -111,14 +112,14 @@ return {
 
       local sources = {
         null_ls.builtins.formatting.stylua,
-        null_ls.builtins.formatting.prettierd,
+        null_ls.builtins.formatting.prettier, -- prettierd doesn't work ???
         null_ls.builtins.formatting.eslint_d,
         null_ls.builtins.formatting.rustfmt,
         null_ls.builtins.formatting.black,
       }
-      if require("pharaok.util").has("typescript.nvim") then
-        table.insert(sources, require("typescript.extensions.null-ls.code-actions"))
-      end
+      -- if require("pharaok.util").has("typescript.nvim") then
+      --   table.insert(sources, require("typescript.extensions.null-ls.code-actions"))
+      -- end
 
       null_ls.setup({
         sources = sources,
