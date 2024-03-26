@@ -38,11 +38,11 @@ def init_bar(screen: int):
         "this_screen_border": secondary,
     }
 
-    batteries = (
-        subprocess.run(["upower", "-e"], capture_output=True)
-        .stdout.decode()
-        .splitlines()
-    )
+    # batteries = (
+    #     subprocess.run(["upower", "-e"], capture_output=True)
+    #     .stdout.decode()
+    #     .splitlines()
+    # )
 
     return bar.Bar(
         [
@@ -96,9 +96,9 @@ def init_bar(screen: int):
                     scroll_interval=0.05,
                     paused_text="{track}",
                 ),
-                widget.Battery(hide_threshold=1)
-                if "/org/freedesktop/UPower/devices/battery_BAT0" in batteries
-                else None,
+                # widget.Battery(hide_threshold=1)
+                # if "/org/freedesktop/UPower/devices/battery_BAT0" in batteries
+                # else None,
                 widget.StatusNotifier(),
                 widget.Spacer(length=1, **right_powerline),
                 widget.TextBox(

@@ -1,3 +1,5 @@
+local has = require("pharaok.util").has
+
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 local function on_attach(client, bufnr)
   if client.supports_method("textDocument/formatting") then
@@ -16,6 +18,7 @@ local function on_attach(client, bufnr)
       end,
     })
   end
+
   local remap = require("pharaok.keymap.remap")
 
   local bufopts = { noremap = true, silent = true, buffer = bufnr }
@@ -69,13 +72,15 @@ return {
         "pmizio/typescript-tools.nvim",
         dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
         cond = function()
-          return require("mason-registry").is_installed("typescript-language-server")
+          return true
+          -- return has("mason-registry") and require("mason-registry").is_installed("typescript-language-server")
         end,
       },
       {
         "b0o/SchemaStore.nvim",
         cond = function()
-          return require("mason-registry").is_installed("json-lsp")
+          return true
+          -- return has("mason-registry") and require("mason-registry").is_installed("json-lsp")
         end,
       },
     },
