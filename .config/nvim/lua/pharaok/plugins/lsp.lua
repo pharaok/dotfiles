@@ -1,4 +1,21 @@
-local function on_attach(_, bufnr)
+local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+local function on_attach(client, bufnr)
+  if client.supports_method("textDocument/formatting") then
+    -- vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      group = augroup,
+      buffer = bufnr,
+      callback = function()
+        vim.lsp.buf.format({
+          bufnr = bufnr,
+          async = false,
+          filter = function(c)
+            return c.name == client.name
+          end,
+        })
+      end,
+    })
+  end
   local remap = require("pharaok.keymap.remap")
 
   local bufopts = { noremap = true, silent = true, buffer = bufnr }
@@ -7,12 +24,12 @@ local function on_attach(_, bufnr)
   remap("n", "gd", vim.lsp.buf.definition, bufopts)
   remap("n", "K", vim.lsp.buf.hover, bufopts)
   remap("n", "gi", vim.lsp.buf.implementation, bufopts)
-  remap("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
-  remap("n", "<Leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-  remap("n", "<Leader>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-  remap("n", "<Leader>wl", function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, bufopts)
+  -- remap("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
+  -- remap("n", "<Leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
+  -- remap("n", "<Leader>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
+  -- remap("n", "<Leader>wl", function()
+  --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+  -- end, bufopts)
   remap("n", "<Leader>D", vim.lsp.buf.type_definition, bufopts)
   remap("n", "<Leader>rn", vim.lsp.buf.rename, bufopts)
   remap("n", "<Leader>ca", vim.lsp.buf.code_action, bufopts)
@@ -37,9 +54,15 @@ return {
       { "folke/neoconf.nvim", config = true },
       { "folke/neodev.nvim", config = true },
       {
-        "simrat39/rust-tools.nvim",
-        cond = function()
-          return require("mason-registry").is_installed("rust-analyzer")
+        "mrcjkb/rustaceanvim",
+        version = "^4", -- Recommended
+        ft = { "rust" },
+        init = function()
+          vim.g.rustaceanvim = {
+            server = {
+              on_attach = on_attach,
+            },
+          }
         end,
       },
       {
@@ -83,9 +106,6 @@ return {
             },
           })
         end,
-        ["rust_analyzer"] = function()
-          require("rust-tools").setup({ server = { on_attach = on_attach, capabilities = capabilities } })
-        end,
         ["tsserver"] = function()
           require("typescript-tools").setup({ on_attach = on_attach })
         end,
@@ -107,14 +127,12 @@ return {
     },
     event = "BufReadPre",
     config = function()
-      local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
       local null_ls = require("null-ls")
 
       local sources = {
         null_ls.builtins.formatting.stylua,
         null_ls.builtins.formatting.prettier, -- prettierd doesn't work ???
-        null_ls.builtins.formatting.eslint_d,
-        null_ls.builtins.formatting.rustfmt,
+        -- null_ls.builtins.formatting.eslint_d, ???
         null_ls.builtins.formatting.black,
       }
       -- if require("pharaok.util").has("typescript.nvim") then
@@ -125,7 +143,7 @@ return {
         sources = sources,
         on_attach = function(client, bufnr)
           if client.supports_method("textDocument/formatting") then
-            vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+            -- vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
             vim.api.nvim_create_autocmd("BufWritePre", {
               group = augroup,
               buffer = bufnr,
@@ -150,7 +168,6 @@ return {
     init = function()
       vim.g.tex_flavor = "latex"
       vim.g.vimtex_view_method = "zathura"
-      vim.g.maplocalleader = " "
       vim.g.vimtex_quickfix_mode = 0
       vim.o.conceallevel = 2
       -- vim.g.tex_conceal = "abmgs"

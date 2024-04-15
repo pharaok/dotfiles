@@ -150,4 +150,5 @@ return {
     end,
   },
   { "kylechui/nvim-surround", version = "*", config = true },
+  { "github/copilot.vim" },
 }
