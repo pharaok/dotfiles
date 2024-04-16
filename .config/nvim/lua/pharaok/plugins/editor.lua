@@ -212,4 +212,15 @@ return {
     },
     config = true,
   },
+
+  {
+    "mbbill/undotree",
+    cmd = "UndotreeToggle",
+    keys = {
+      {
+        "<Leader>u",
+        "<Cmd>UndotreeToggle<CR>",
+      },
+    },
+  }
 }
