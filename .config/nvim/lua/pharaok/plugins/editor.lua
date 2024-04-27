@@ -6,25 +6,40 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = "Telescope",
     keys = function()
+      local builtin = require('telescope.builtin')
       return {
-        { "<Leader>:", "<Cmd>Telescope commands<CR>" },
-        { "<Leader><Space>", "<Cmd>Telescope find_files<CR>" },
+        { "<Leader>:", builtin.commands },
+        { "<Leader><Space>", builtin.find_files },
         {
           "<Leader><Tab>",
           function()
-            require("telescope.builtin").buffers({ sort_lastused = true })
+            builtin.buffers({ sort_lastused = true })
           end,
         },
-        { "<Leader>ff", "<Cmd>Telescope find_files<CR>" },
-        { "<Leader>fg", "<Cmd>Telescope live_grep<CR>" },
-        { "<Leader>fo", "<Cmd>Telescope oldfiles<CR>" },
-        { "<Leader>cs", "<Cmd>Telescope colorscheme<CR>" },
+        { "<Leader>ff", builtin.find_files },
+        { "<Leader>fg", builtin.live_grep },
+        { "<Leader>fh", builtin.help_tags},
+        { "<Leader>gf", builtin.git_files },
+        { "<Leader>gg", builtin.live_grep },
+        { "<Leader>fo", builtin.oldfiles },
+        { "<Leader>cs", builtin.colorscheme },
       }
     end,
     config = function()
+      local telescope = require("telescope")
       if util.has("nvim-notify") then
-        require("telescope").load_extension("notify")
+        telescope.load_extension("notify")
       end
+
+      local vimgrep_arguments = { unpack(require("telescope.config").values.vimgrep_arguments) }
+      table.insert(vimgrep_arguments, "--hidden")
+      table.insert(vimgrep_arguments, "--glob")
+      table.insert(vimgrep_arguments, "!**/.git/*")
+      telescope.setup({
+        defualts = {
+          vimgrep_arguments = vimgrep_arguments 
+        }
+      })
     end,
   },
 
