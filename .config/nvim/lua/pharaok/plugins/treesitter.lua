@@ -13,7 +13,6 @@ return {
       "c",
       "cpp",
       "css",
-      "help",
       "html",
       "javascript",
       "json",
