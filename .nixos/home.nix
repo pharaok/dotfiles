@@ -1,15 +1,13 @@
-{ config, pkgs, lib, dotfiles, ... }:
+{ config, pkgs, lib, dotfiles, username, ... }:
 
 let 
-  username = "pharaok";
-  homeDir = "/home/${username}";
   dotfilesDir = "./.dotfiles";
 in {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
     
   home.username = username;
-  home.homeDirectory = homeDir;
+  home.homeDirectory = "/home/${username}";
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -23,7 +21,7 @@ in {
   home.activation = {
     cloneDotfiles = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       if [ ! -d "${dotfilesDir}" ]; then
-        ${pkgs.git}/bin/git clone https://github.com/pharaok/dotfiles.git ${dotfilesDir}
+        ${pkgs.git}/bin/git clone https://github.com/pharaok/dotfiles.git ${dotfilesDir} || true 
       fi
     '';
   };
@@ -39,7 +37,7 @@ in {
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
     # # fonts?
-    (pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; })
+    (pkgs.nerdfonts.override { fonts = [ "FiraCode" "NerdFontsSymbolsOnly" ]; })
 
 
     # # You can also create simple shell scripts directly inside your
@@ -86,7 +84,7 @@ in {
   #  /etc/profiles/per-user/pharaok/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    EDITOR = "nvim";
+    # EDITOR = "nvim";
   };
 
   programs.neovim = {
@@ -97,6 +95,8 @@ in {
     withPython3 = true;
     withNodeJs = true;
   };
+
+  fonts.fontconfig.enable = true;
 
 
   # Let Home Manager install and manage itself.

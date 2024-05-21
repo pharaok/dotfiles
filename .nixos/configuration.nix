@@ -89,7 +89,6 @@
     git
     htop
     neofetch
-    pkgs.home-manager
     ripgrep
     rofi
     rustup
