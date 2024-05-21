@@ -1,7 +1,7 @@
 return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
-  dependencies = { "windwp/nvim-ts-autotag", "JoosepAlviste/nvim-ts-context-commentstring" },
+  dependencies = "windwp/nvim-ts-autotag",
   event = "BufReadPre",
   opts = {
     autotag = { enable = true },
