@@ -6,9 +6,9 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = "Telescope",
     keys = function()
-      local builtin = require('telescope.builtin')
+      local builtin = require("telescope.builtin")
       return {
-        { "<Leader>:", builtin.commands },
+        { "<Leader>:",       builtin.commands },
         { "<Leader><Space>", builtin.find_files },
         {
           "<Leader><Tab>",
@@ -18,7 +18,7 @@ return {
         },
         { "<Leader>ff", builtin.find_files },
         { "<Leader>fg", builtin.live_grep },
-        { "<Leader>fh", builtin.help_tags},
+        { "<Leader>fh", builtin.help_tags },
         { "<Leader>gf", builtin.git_files },
         { "<Leader>gg", builtin.live_grep },
         { "<Leader>fo", builtin.oldfiles },
@@ -27,9 +27,6 @@ return {
     end,
     config = function()
       local telescope = require("telescope")
-      if util.has("nvim-notify") then
-        telescope.load_extension("notify")
-      end
 
       local vimgrep_arguments = { unpack(require("telescope.config").values.vimgrep_arguments) }
       table.insert(vimgrep_arguments, "--hidden")
@@ -37,8 +34,8 @@ return {
       table.insert(vimgrep_arguments, "!**/.git/*")
       telescope.setup({
         defualts = {
-          vimgrep_arguments = vimgrep_arguments 
-        }
+          vimgrep_arguments = vimgrep_arguments,
+        },
       })
     end,
   },
@@ -151,8 +148,8 @@ return {
       -- icons / text used for a diagnostic
       local no_icons = {
         icons = false,
-        fold_open = "v", -- icon used for open folds
-        fold_closed = ">", -- icon used for closed folds
+        fold_open = "v",      -- icon used for open folds
+        fold_closed = ">",    -- icon used for closed folds
         indent_lines = false, -- add an indent guide below the fold icons
         signs = {
           -- icons / text used for a diagnostic
@@ -222,5 +219,5 @@ return {
         "<Cmd>UndotreeToggle<CR>",
       },
     },
-  }
+  },
 }

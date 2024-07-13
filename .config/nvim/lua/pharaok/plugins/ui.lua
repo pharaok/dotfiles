@@ -7,7 +7,7 @@ return {
   },
   {
     "akinsho/bufferline.nvim",
-    version = "v3.*",
+    version = "v4.*",
     event = "VeryLazy",
     opts = {
       options = {
@@ -91,13 +91,19 @@ return {
     end,
   },
   {
-    "rcarriga/nvim-notify",
-    event = "VeryLazy",
-    opts = { top_down = false, background_colour = vim.g.transparent and "#24283b" or nil },
-    config = function(_, opts)
-      require("notify").setup(opts)
-      vim.notify = require("notify")
-    end,
+    "j-hui/fidget.nvim",
+    tag = "v1.0.0",
+    config = {
+      notification = {
+        window = {
+          winblend = 0,
+        },
+      },
+    },
+  },
+  {
+    "Bekaboo/dropbar.nvim",
+    dependencies = "nvim-telescope/telescope-fzf-native.nvim",
   },
 
   { "brenoprata10/nvim-highlight-colors", event = "BufReadPre", opts = { enable_tailwind = true } },
