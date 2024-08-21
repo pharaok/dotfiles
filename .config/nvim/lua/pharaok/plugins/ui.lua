@@ -7,6 +7,7 @@ return {
   },
   {
     "akinsho/bufferline.nvim",
+    enabled = false,
     version = "v4.*",
     event = "VeryLazy",
     opts = {
@@ -93,7 +94,7 @@ return {
   {
     "j-hui/fidget.nvim",
     tag = "v1.0.0",
-    config = {
+    opts = {
       notification = {
         window = {
           winblend = 0,

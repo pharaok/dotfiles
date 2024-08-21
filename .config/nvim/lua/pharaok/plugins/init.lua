@@ -1,3 +1,5 @@
+local remap = require("pharaok.keymap.remap")
+
 return {
   {
     "folke/tokyonight.nvim",
@@ -22,7 +24,22 @@ return {
   { "tpope/vim-fugitive", cmd = { "G", "Git" } },
   {
     "lewis6991/gitsigns.nvim",
-    opts = { current_line_blame = true },
+    opts = {
+      current_line_blame = true,
+      on_attach = function()
+        local gitsigns = require("gitsigns")
+        remap("n", "<Leader>hs", gitsigns.reset_hunk)
+        remap("n", "<Leader>hr", gitsigns.reset_hunk)
+        remap("v", "<Leader>hs", function()
+          gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+        end)
+        remap("v", "<Leader>hr", function()
+          gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+        end)
+        remap("n", "<Leader>hS", gitsigns.stage_buffer)
+        remap("n", "<Leader>hR", gitsigns.reset_buffer)
+      end,
+    },
     cmd = "Gitsigns",
     init = function()
       local augroup = vim.api.nvim_create_augroup("GitsignsLazy", {})
@@ -41,6 +58,15 @@ return {
       })
     end,
   },
+  {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "sindrets/diffview.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+    config = true,
+  },
 
   {
     "glacambre/firenvim",
@@ -49,7 +75,7 @@ return {
     priority = 2000,
     cond = not not vim.g.started_by_firenvim,
     build = function()
-      require("lazy").load({ plugins = "firenvim", wait = true })
+      require("lazy").load({ plugins = { "firenvim" }, wait = true })
       vim.fn["firenvim#install"](0)
     end,
     config = function()
@@ -74,7 +100,7 @@ return {
         local ft = name_to_ft[result] or result
         vim.bo.filetype = ft
       end
-      vim.cmd([[ 
+      vim.cmd([[
         function LeetcodeSetFileType(result)
           call v:lua.LeetcodeSetFileType(a:result)
         endfunction

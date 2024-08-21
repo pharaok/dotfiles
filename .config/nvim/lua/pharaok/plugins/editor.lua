@@ -140,7 +140,7 @@ return {
   },
   {
     "folke/trouble.nvim",
-    -- dependencies = "nvim-tree/nvim-web-devicons",
+    dependencies = "nvim-tree/nvim-web-devicons",
     cmd = "Trouble",
     opts = function()
       local opts = {}
@@ -181,7 +181,7 @@ return {
               end
             end
           end
-          vim.cmd([[ TroubleToggle workspace_diagnostics ]])
+          vim.cmd([[ Trouble diagnostics toggle ]])
         end,
       },
     },

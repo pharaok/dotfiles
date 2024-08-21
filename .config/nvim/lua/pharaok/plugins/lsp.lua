@@ -54,12 +54,12 @@ return {
         --   return require("pharaok.util").has("nvim-cmp")
         -- end,
       },
-      { "folke/neoconf.nvim", config = true },
-      { "folke/neodev.nvim", config = true },
+      { "folke/neoconf.nvim",      config = true },
+      { "folke/neodev.nvim",       config = true },
       {
         "mrcjkb/rustaceanvim",
-        version = "^4", -- Recommended
-        ft = { "rust" },
+        version = "^5", -- Recommended
+        lazy = false,
         init = function()
           vim.g.rustaceanvim = {
             server = {
@@ -83,6 +83,15 @@ return {
           -- return has("mason-registry") and require("mason-registry").is_installed("json-lsp")
         end,
       },
+      {
+        "ray-x/go.nvim",
+        config = function()
+          require("go").setup()
+        end,
+        event = { "CmdlineEnter" },
+        ft = { "go", "gomod" },
+        build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+      },
     },
     cmd = "Neoconf",
     event = "BufReadPre",
@@ -91,10 +100,12 @@ return {
       local mlsp = require("mason-lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-      mlsp.setup({ ensure_installed = {
-        "lua_ls",
-        "vimls",
-      } })
+      mlsp.setup({
+        ensure_installed = {
+          "lua_ls",
+          "vimls",
+        },
+      })
       mlsp.setup_handlers({
         function(server)
           lspconfig[server].setup({ on_attach = on_attach, capabilities = capabilities })
