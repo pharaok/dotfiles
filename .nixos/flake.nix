@@ -13,6 +13,8 @@
       url = "github:pharaok/dotfiles";
       flake = false;
     };
+
+    nur.url = "github:nix-community/NUR";
   };
 
   outputs = {
@@ -20,6 +22,7 @@
     nixpkgs,
     home-manager,
     dotfiles,
+    nur,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -59,7 +62,10 @@
           inherit dotfiles;
           username = "pharaok";
         };
-        modules = [./home.nix];
+        modules = [
+          nur.nixosModules.nur
+          ./home.nix
+        ];
       };
     };
   };

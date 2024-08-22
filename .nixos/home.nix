@@ -1,12 +1,5 @@
-{
-  config,
-  pkgs,
-  lib,
-  dotfiles,
-  username,
-  ...
-}: let
-  dotfilesDir = "./.dotfiles";
+{ config, pkgs, lib, dotfiles, username, ... }:
+let dotfilesDir = "./.dotfiles";
 in {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -15,7 +8,7 @@ in {
   home.homeDirectory = "/home/${username}";
 
   home.activation = {
-    cloneDotfiles = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    cloneDotfiles = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       if [ ! -d "${dotfilesDir}" ]; then
         ${pkgs.git}/bin/git clone https://github.com/pharaok/dotfiles.git ${dotfilesDir} || true
       fi
@@ -23,9 +16,6 @@ in {
   };
 
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.overlays = [
-    (import ./spotify-adblock.nix)
-  ];
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
@@ -34,8 +24,8 @@ in {
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
     # # fonts?
-    (nerdfonts.override {fonts = ["FiraCode" "NerdFontsSymbolsOnly"];})
-    spotify-adblock
+    (nerdfonts.override { fonts = [ "FiraCode" "NerdFontsSymbolsOnly" ]; })
+    config.nur.repos.nltch.spotify-adblock
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
@@ -49,10 +39,10 @@ in {
   # plain files is through 'home.file'.
   home.file = {
     "${config.xdg.configHome}" = {
-      source =
-        if builtins.stringLength (builtins.getEnv "HOME_MANAGER_DEV") > 0
-        then ../.config
-        else "${dotfiles}/.config";
+      source = ../.config;
+      # if true builtins.stringLength (builtins.getEnv "HOME_MANAGER_DEV") > 0
+      # then ../.config
+      # else "${dotfiles}/.config";
       recursive = true;
     };
   };

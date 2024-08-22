@@ -1,20 +1,19 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{
-  config,
-  pkgs,
-  ...
-}: {
-  imports = [
-    ./common.nix
-    ./hardware-configuration.nix
-  ];
+{ config, pkgs, ... }: {
+  imports = [ ./common.nix ./laptop-hardware-configuration.nix ];
 
-  # Bootloader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/vda";
-  boot.loader.grub.useOSProber = true;
+  # Bootloader
+  boot.loader = {
+    efi = { canTouchEfiVariables = true; };
+    grub = {
+      enable = true;
+      device = "nodev";
+      efiSupport = true;
+      useOSProber = true;
+    };
+  };
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -25,6 +24,11 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.support32Bit = true;
 
   # Set your time zone.
   time.timeZone = "Africa/Cairo";
@@ -48,8 +52,8 @@
   users.users.pharaok = {
     isNormalUser = true;
     description = "pharaok";
-    extraGroups = ["networkmanager" "wheel"];
-    packages = with pkgs; [];
+    extraGroups = [ "networkmanager" "wheel" "audio" ];
+    packages = with pkgs; [ ];
   };
 
   # Allow unfree packages
