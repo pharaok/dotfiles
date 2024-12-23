@@ -31,17 +31,6 @@ return {
     "nvim-lualine/lualine.nvim",
     -- dependencies = "nvim-tree/nvim-web-devicons",
     event = "VeryLazy",
-    init = function()
-      local str_split = require("pharaok.util").str_split
-      vim.fn.jobstart({ "python3", "/home/pharaok/.config/nvim/mtop.py", vim.loop.os_getpid() }, {
-        on_stdout = function(_, cpu)
-          cpu = tonumber(cpu[1])
-          if cpu ~= nil then
-            vim.g.cpu = cpu
-          end
-        end,
-      })
-    end,
     opts = function()
       local opts = {
         options = {
