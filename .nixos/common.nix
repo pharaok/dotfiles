@@ -23,7 +23,9 @@
   services.libinput = {
     enable = true;
     mouse = { accelProfile = "flat"; };
-    touchpad = { sendEventsMode = "disabled-on-external-mouse"; };
+    touchpad = {
+      naturalScrolling = true;
+    };
   };
   services.kanata = { # TODO
     enable = true;
@@ -53,6 +55,7 @@
     unzip
     wezterm
     wget
+    xclip
     zathura
   ];
 

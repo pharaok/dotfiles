@@ -14,7 +14,10 @@
       flake = false;
     };
 
-    nur.url = "github:nix-community/NUR";
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -57,13 +60,15 @@
     };
     homeConfigurations = {
       pharaok = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ nur.overlay ];
+        };
         extraSpecialArgs = {
           inherit dotfiles;
           username = "pharaok";
         };
         modules = [
-          nur.nixosModules.nur
           ./home.nix
         ];
       };

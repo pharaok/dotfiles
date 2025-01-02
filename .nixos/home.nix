@@ -1,5 +1,6 @@
 { config, pkgs, lib, dotfiles, username, ... }:
-let dotfilesDir = "./.dotfiles";
+let 
+  dotfilesDir = "./.dotfiles";
 in {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -20,12 +21,9 @@ in {
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    (nerdfonts.override { fonts = [ "FiraCode" "NerdFontsSymbolsOnly" ]; })
-    config.nur.repos.nltch.spotify-adblock
+    nerd-fonts.fira-code
+    nerd-fonts.symbols-only
+    nur.repos.nltch.spotify-adblock
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
