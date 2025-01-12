@@ -62,7 +62,7 @@
       pharaok = home-manager.lib.homeManagerConfiguration {
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ nur.overlay ];
+          overlays = [ nur.overlays.default ];
         };
         extraSpecialArgs = {
           inherit dotfiles;

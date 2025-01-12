@@ -21,6 +21,7 @@ in {
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    flameshot
     nerd-fonts.fira-code
     nerd-fonts.symbols-only
     nur.repos.nltch.spotify-adblock
@@ -72,6 +73,11 @@ in {
     withPython3 = true;
     withNodeJs = true;
   };
+    dconf.settings = {
+      "org/gnome/mutter" = {
+        experimental-features = [ "scale-monitor-framebuffer" ];
+      };
+    };
 
   fonts.fontconfig.enable = true;
 
