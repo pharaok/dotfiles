@@ -46,16 +46,16 @@ return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      { "williamboman/mason.nvim", cmd = "Mason", config = true },
-      "williamboman/mason-lspconfig.nvim",
+      -- { "williamboman/mason.nvim", cmd = "Mason", config = true },
+      -- "williamboman/mason-lspconfig.nvim",
       {
         "hrsh7th/cmp-nvim-lsp",
         -- cond = function()
         --   return require("pharaok.util").has("nvim-cmp")
         -- end,
       },
-      { "folke/neoconf.nvim",      config = true },
-      { "folke/neodev.nvim",       config = true },
+      { "folke/neoconf.nvim", config = true },
+      { "folke/neodev.nvim",  config = true },
       {
         "mrcjkb/rustaceanvim",
         version = "^5", -- Recommended
@@ -97,35 +97,42 @@ return {
     event = "BufReadPre",
     config = function()
       local lspconfig = require("lspconfig")
-      local mlsp = require("mason-lspconfig")
+      -- local mlsp = require("mason-lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-      mlsp.setup({
-        ensure_installed = {
-          "lua_ls",
-          "vimls",
-        },
-      })
-      mlsp.setup_handlers({
-        function(server)
-          lspconfig[server].setup({ on_attach = on_attach, capabilities = capabilities })
-        end,
-        ["jsonls"] = function()
-          lspconfig.jsonls.setup({
-            on_attach = on_attach,
-            capabilities = capabilities,
-            settings = {
-              json = {
-                schemas = require("schemastore").json.schemas(),
-                validate = { enable = true },
-              },
-            },
-          })
-        end,
-        ["tsserver"] = function()
-          require("typescript-tools").setup({ on_attach = on_attach })
-        end,
-      })
+      local opts = { on_attach = on_attach, capabilities = capabilities }
+      lspconfig.clangd.setup(opts)
+      lspconfig.lua_ls.setup(opts)
+      lspconfig.vimls.setup(opts)
+      lspconfig.texlab.setup(opts)
+
+
+      -- mlsp.setup({
+      --   ensure_installed = {
+      --     "lua_ls",
+      --     "vimls",
+      --   },
+      -- })
+      -- mlsp.setup_handlers({
+      --   function(server)
+      --     lspconfig[server].setup({ on_attach = on_attach, capabilities = capabilities })
+      --   end,
+      --   ["jsonls"] = function()
+      --     lspconfig.jsonls.setup({
+      --       on_attach = on_attach,
+      --       capabilities = capabilities,
+      --       settings = {
+      --         json = {
+      --           schemas = require("schemastore").json.schemas(),
+      --           validate = { enable = true },
+      --         },
+      --       },
+      --     })
+      --   end,
+      --   ["tsserver"] = function()
+      --     require("typescript-tools").setup({ on_attach = on_attach })
+      --   end,
+      -- })
     end,
   },
 
@@ -133,7 +140,7 @@ return {
     "nvimtools/none-ls.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "williamboman/mason.nvim",
+      -- "williamboman/mason.nvim",
       -- {
       --   "jose-elias-alvarez/typescript.nvim",
       --   cond = function()
@@ -147,9 +154,11 @@ return {
 
       local sources = {
         null_ls.builtins.formatting.stylua,
-        null_ls.builtins.formatting.prettier, -- prettierd doesn't work ???
-        -- null_ls.builtins.formatting.eslint_d, ???
+        null_ls.builtins.formatting.prettierd,
+        -- null_ls.builtins.formatting.eslint_d,
         null_ls.builtins.formatting.black,
+        null_ls.builtins.formatting.clang_format
+
       }
       -- if require("pharaok.util").has("typescript.nvim") then
       --   table.insert(sources, require("typescript.extensions.null-ls.code-actions"))
