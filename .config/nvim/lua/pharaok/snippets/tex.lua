@@ -51,10 +51,10 @@ local set = function(set_symbol)
     { trig = string.rep(set_symbol, 2) .. "([%+%-%*]?)([^%+%-%*])", regTrig = true, snippetType = "autosnippet" },
     f(function(_, snip)
       return "\\mathbb{"
-        .. set_symbol
-        .. "}"
-        .. (snip.captures[1] ~= "" and ("^" .. snip.captures[1]) or "")
-        .. snip.captures[2]
+          .. set_symbol
+          .. "}"
+          .. (snip.captures[1] ~= "" and ("^" .. snip.captures[1]) or "")
+          .. snip.captures[2]
     end)
   )
 end
@@ -70,7 +70,7 @@ local snippets = {
         \usepackage{amssymb}
 
         \begin{document}
-            <>     
+            <>
         \end{document}
       ]],
       { i(0) }
@@ -241,6 +241,38 @@ local snippets = {
   set("Z"),
   set("Q"),
   set("R"),
+
+  -- Linear Algebra
+  s({
+      trig = "mat(%d)(%d)",
+      regTrig = true,
+      hidden = true,
+    },
+    fmta(
+      [[
+        \begin{bmatrix}
+            <>
+        \end{bmatrix}
+      ]], {
+        d(1, function(_, snip)
+          local n = tonumber(snip.captures[1])
+          local m = tonumber(snip.captures[2])
+          local nodes = {}
+
+          for r = 1, n do
+            for c = 1, m do
+              local k = (r - 1) * m + c
+              table.insert(nodes, i(k))
+              if c ~= m then table.insert(nodes, t(" & ")) end
+            end
+            if r ~= n then table.insert(nodes, t({ " \\\\", "    " })) end
+          end
+
+          return sn(nil, nodes)
+        end)
+      }
+    )
+  ),
 }
 
 -- Functions
