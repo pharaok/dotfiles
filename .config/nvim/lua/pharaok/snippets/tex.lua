@@ -5,33 +5,50 @@ local a = function(t)
     snippetType = "autosnippet",
   }
 end
+local is_mathzone = function()
+  return vim.api.nvim_eval("vimtex#syntax#in_mathzone()") == 1
+end
+local word_trig_engine = function()
+  return function(line_to_cursor, trigger)
+    local find_res = { line_to_cursor:find(trigger .. "$") }
+    if #find_res > 0 then
+      local captures = {}
+
+      local from = find_res[1]
+
+      -- negative look behind
+      if from > 1 and line_to_cursor:sub(from - 1, from - 1) == "\\" then
+        return nil
+      end
+
+      local match = line_to_cursor:sub(from)
+
+      captures[1] = find_res[3]
+      return match, captures
+    else
+      return nil
+    end
+  end
+end
 local w = function(t, r)
   return s(
     {
       trig = t .. "(%s)",
-      trigEngine = function(_)
-        return function(line_to_cursor, trigger)
-          local find_res = { line_to_cursor:find(trigger .. "$") }
-          if #find_res > 0 then
-            local captures = {}
-
-            local from = find_res[1]
-
-            -- negative look behind
-            if from > 1 and line_to_cursor:sub(from - 1, from - 1) == "\\" then
-              return nil
-            end
-
-            local match = line_to_cursor:sub(from)
-
-            captures[1] = find_res[3]
-            return match, captures
-          else
-            return nil
-          end
-        end
-      end,
+      trigEngine = word_trig_engine,
       snippetType = "autosnippet",
+    },
+    f(function(_, snip)
+      return r .. snip.captures[1]
+    end)
+  )
+end
+local wm = function(t, r)
+  return s(
+    {
+      trig = t .. "(%s)",
+      trigEngine = word_trig_engine,
+      snippetType = "autosnippet",
+      condition = is_mathzone
     },
     f(function(_, snip)
       return r .. snip.captures[1]
@@ -43,7 +60,7 @@ local am = function(t) -- auto mathzone snippet trigger
     trig = t,
     wordTrig = false,
     snippetType = "autosnippet",
-    condition = vim.api.nvim_eval("vimtex#syntax#in_mathzone()") == 1,
+    condition = is_mathzone,
   }
 end
 local set = function(set_symbol)
@@ -89,7 +106,7 @@ local snippets = {
     snippetType = "autosnippet",
   }, fmta("\\sqrt[<>]{<>}", { i(1), i(2) })),
 
-  s("fr", fmta("\\frac{<>}{<>}", { i(1), i(2) })),
+  s({ trig = "fr", hidden = true }, fmta("\\frac{<>}{<>}", { i(1), i(2) })), -- HACK: annoying when trying to type F, so I made it hidden
   s(
     "en",
     fmta(
@@ -114,7 +131,7 @@ local snippets = {
     end)
   ),
   s(
-    { trig = "([%l%u])hat", regTrig = true, snippetType = "autosnippet" },
+    { trig = "([%l%u])hat", regTrig = true },
     f(function(_, snip)
       return ("\\hat{%s}"):format(snip.captures[1])
     end)
@@ -226,15 +243,15 @@ local snippets = {
   s(am(">="), t("\\geq")),
 
   w("%.%.%.", "\\cdots"),
-  w("%.", "\\cdot"),
-  w("not", "\\not"),
+  wm("%.", "\\cdot"),
+  wm("not", "\\not"),
   w("inf", "\\infty"),
-  w("in", "\\in"),
+  wm("in", "\\in"),
   w("nin", "\\notin"),
   w("sub", "\\subset"),
   w("sup", "\\supset"),
-  s({ trig = "uu", snippetType = "autosnippet" }, t("\\cup")),
-  s({ trig = "nn", snippetType = "autosnippet" }, t("\\cap")),
+  s(am("uu"), t("\\cup")),
+  s(am("nn"), t("\\cap")),
 
   w("OO", "\\O"),
   set("N"),
@@ -273,11 +290,70 @@ local snippets = {
       }
     )
   ),
+
+  -- Discrete Mathematics
+  wm("neg", "\\neg"),
+  s(am("&&"), t("\\land")),
+  s(am("||"), t("\\lor")),
+  w("imp", "\\implies"),
+  w("iff", "\\iff"),
+  s({
+      trig = "truth(%d+)",
+      regTrig = true,
+      hidden = true,
+    },
+    fmta(
+      [[
+        \begin{tabular}{| <> |}
+            \hline
+            <> & <> \\
+            \hline
+            \hline
+            <>
+            \hline
+        \end{tabular}
+      ]], {
+        f(function(x, snip)
+          local n = tonumber(snip.captures[1])
+          local _, count = table.concat(x[1] or {}, ""):gsub("&", "")
+          return string.rep("c | ", n - 1) .. "c |" .. string.rep("| c ", count + 1)
+        end, { 1 }),
+        f(function(_, snip)
+          local variables = { "p", "q", "r", "s", "t" }
+          local n = tonumber(snip.captures[1])
+          return table.concat(variables, " & ", 1, n)
+        end),
+        i(1),
+        d(2, function(x, snip)
+          local n = tonumber(snip.captures[1])
+          local num_rows = 2 ^ n
+          local nodes = {}
+          local _, count = table.concat(x[1] or {}, ""):gsub("&", "")
+          count = count + 1
+
+          for r = 1, num_rows do
+            local truth_values = {}
+            for v = 1, n do
+              table.insert(truth_values, bit.band((num_rows - r), bit.lshift(1, n - v)) ~= 0 and "T" or "F")
+            end
+            table.insert(nodes, t(table.concat(truth_values, " & ")))
+            for c = 1, count do
+              table.insert(nodes, t(" & "))
+              table.insert(nodes, i((c - 1) * num_rows + r))
+            end
+            if r ~= num_rows then table.insert(nodes, t({ " \\\\", "    " })) end
+          end
+
+          return sn(nil, nodes)
+        end, { 1 })
+      }
+    )
+  ),
 }
 
 -- Functions
 for _, fn in ipairs({ "sin", "cos", "tan", "csc", "sec", "cot", "log", "ln", "min", "max", "gcd", "det" }) do
-  table.insert(snippets, s({ trig = fn, wordTrig = true, snippetType = "autosnippet" }, t("\\" .. fn)))
+  table.insert(snippets, s(am(fn), t("\\" .. fn)))
 end
 
 return snippets
