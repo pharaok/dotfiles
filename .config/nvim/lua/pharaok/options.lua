@@ -20,7 +20,7 @@ opt.splitbelow = true
 opt.splitright = true
 
 opt.termguicolors = true
-vim.g.transparent = true
+vim.g.transparent = false
 vim.g.icons = true
 
 opt.exrc = true

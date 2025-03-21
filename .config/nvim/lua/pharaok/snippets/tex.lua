@@ -292,6 +292,10 @@ local snippets = {
   ),
 
   -- Discrete Mathematics
+  wm("true", "\\text{T}"),
+  wm("false", "\\text{F}"),
+  wm("ttlg", "\\textbf{T}"),
+  wm("ctdn", "\\textbf{F}"),
   wm("neg", "\\neg"),
   s(am("&&"), t("\\land")),
   s(am("||"), t("\\lor")),
@@ -341,7 +345,7 @@ local snippets = {
               table.insert(nodes, t(" & "))
               table.insert(nodes, i((c - 1) * num_rows + r))
             end
-            if r ~= num_rows then table.insert(nodes, t({ " \\\\", "    " })) end
+            table.insert(nodes, t({ " \\\\", "    " }))
           end
 
           return sn(nil, nodes)

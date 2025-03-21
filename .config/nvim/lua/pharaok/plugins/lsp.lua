@@ -99,12 +99,13 @@ return {
       local lspconfig = require("lspconfig")
       -- local mlsp = require("mason-lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
-
       local opts = { on_attach = on_attach, capabilities = capabilities }
+
       lspconfig.clangd.setup(opts)
       lspconfig.lua_ls.setup(opts)
-      lspconfig.vimls.setup(opts)
+      lspconfig.pylsp.setup(opts)
       lspconfig.texlab.setup(opts)
+      lspconfig.vimls.setup(opts)
 
 
       -- mlsp.setup({
@@ -157,8 +158,8 @@ return {
         null_ls.builtins.formatting.prettierd,
         -- null_ls.builtins.formatting.eslint_d,
         null_ls.builtins.formatting.black,
-        null_ls.builtins.formatting.clang_format
-
+        null_ls.builtins.formatting.clang_format,
+        null_ls.builtins.formatting.nixfmt
       }
       -- if require("pharaok.util").has("typescript.nvim") then
       --   table.insert(sources, require("typescript.extensions.null-ls.code-actions"))
@@ -194,7 +195,7 @@ return {
       vim.g.tex_flavor = "latex"
       vim.g.vimtex_view_method = "zathura"
       vim.g.vimtex_quickfix_mode = 0
-      vim.o.conceallevel = 2
+      -- vim.o.conceallevel = 2
       -- vim.g.tex_conceal = "abmgs"
       vim.g.vimtex_syntax_conceal = { math_bounds = 0 }
     end,
