@@ -15,9 +15,17 @@ template <typename T> void print(T &v) {
 }
 // clang-format on
 
+void solve() {
+
+}
 int main() {
   // FIN("input.txt");
   FASTIO;
+
+  int t = 1;
+  cin >> t;
+  while (t--)
+    solve();
 
   return 0;
 }
