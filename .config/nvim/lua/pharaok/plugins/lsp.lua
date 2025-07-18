@@ -46,8 +46,6 @@ return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      -- { "williamboman/mason.nvim", cmd = "Mason", config = true },
-      -- "williamboman/mason-lspconfig.nvim",
       {
         "hrsh7th/cmp-nvim-lsp",
         -- cond = function()
@@ -73,14 +71,12 @@ return {
         dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
         cond = function()
           return true
-          -- return has("mason-registry") and require("mason-registry").is_installed("typescript-language-server")
         end,
       },
       {
         "b0o/SchemaStore.nvim",
         cond = function()
           return true
-          -- return has("mason-registry") and require("mason-registry").is_installed("json-lsp")
         end,
       },
       {
@@ -96,44 +92,15 @@ return {
     cmd = "Neoconf",
     event = "BufReadPre",
     config = function()
-      local lspconfig = require("lspconfig")
-      -- local mlsp = require("mason-lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local opts = { on_attach = on_attach, capabilities = capabilities }
 
-      lspconfig.clangd.setup(opts)
-      lspconfig.lua_ls.setup(opts)
-      lspconfig.pylsp.setup(opts)
-      lspconfig.texlab.setup(opts)
-      lspconfig.vimls.setup(opts)
-
-
-      -- mlsp.setup({
-      --   ensure_installed = {
-      --     "lua_ls",
-      --     "vimls",
-      --   },
-      -- })
-      -- mlsp.setup_handlers({
-      --   function(server)
-      --     lspconfig[server].setup({ on_attach = on_attach, capabilities = capabilities })
-      --   end,
-      --   ["jsonls"] = function()
-      --     lspconfig.jsonls.setup({
-      --       on_attach = on_attach,
-      --       capabilities = capabilities,
-      --       settings = {
-      --         json = {
-      --           schemas = require("schemastore").json.schemas(),
-      --           validate = { enable = true },
-      --         },
-      --       },
-      --     })
-      --   end,
-      --   ["tsserver"] = function()
-      --     require("typescript-tools").setup({ on_attach = on_attach })
-      --   end,
-      -- })
+      vim.lsp.config('*', opts)
+      vim.lsp.enable('clangd')
+      vim.lsp.enable('lua_ls')
+      vim.lsp.enable('pylsp')
+      vim.lsp.enable('texlab')
+      vim.lsp.enable('vimls')
     end,
   },
 
@@ -141,13 +108,6 @@ return {
     "nvimtools/none-ls.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      -- "williamboman/mason.nvim",
-      -- {
-      --   "jose-elias-alvarez/typescript.nvim",
-      --   cond = function()
-      --     return require("mason-registry").is_installed("typescript-language-server")
-      --   end,
-      -- },
     },
     event = "BufReadPre",
     config = function()
