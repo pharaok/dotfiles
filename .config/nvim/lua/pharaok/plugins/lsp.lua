@@ -95,12 +95,25 @@ return {
       local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
       local opts = { on_attach = on_attach, capabilities = capabilities }
 
-      vim.lsp.config('*', opts)
-      vim.lsp.enable('clangd')
-      vim.lsp.enable('lua_ls')
-      vim.lsp.enable('pylsp')
-      vim.lsp.enable('texlab')
-      vim.lsp.enable('vimls')
+      -- vim.lsp.config('*', opts) -- HACK: didn't work
+      local servers = {
+        "clangd",
+        "pylsp",
+        "texlab",
+        "lua_ls",
+        "vimls",
+      }
+      for _, s in ipairs(servers) do
+        vim.lsp.config(s, opts)
+      end
+      vim.lsp.config("clangd", {
+        on_attach = function(client, bufnr)
+          on_attach(client, bufnr)
+          vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
+        end,
+      })
+
+      vim.lsp.enable(servers)
     end,
   },
 
@@ -119,7 +132,7 @@ return {
         -- null_ls.builtins.formatting.eslint_d,
         null_ls.builtins.formatting.black,
         null_ls.builtins.formatting.clang_format,
-        null_ls.builtins.formatting.nixfmt
+        null_ls.builtins.formatting.nixfmt,
       }
       -- if require("pharaok.util").has("typescript.nvim") then
       --   table.insert(sources, require("typescript.extensions.null-ls.code-actions"))
