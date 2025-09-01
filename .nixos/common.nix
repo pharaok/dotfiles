@@ -1,7 +1,11 @@
-{ pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   nix.settings = {
     allowed-users = [ "@wheel" ];
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 
   hardware.bluetooth.enable = true;
@@ -9,61 +13,61 @@
 
   services.picom.enable = true;
   services.blueman.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
   services.xserver = {
     enable = true;
 
-    windowManager.qtile = {
-      enable = true;
-      extraPackages = python3Packages: with python3Packages; [ qtile-extras ];
-    };
-
-    # Configure keymap in X11
-    xkb = {
-      layout = "us";
-      variant = "";
-    };
+    # windowManager.qtile = {
+    #   enable = true;
+    #   extraPackages = python3Packages: with python3Packages; [ qtile-extras ];
+    # };
   };
-  services.libinput = {
-    enable = true;
-    mouse = { accelProfile = "flat"; };
-    touchpad = {
-      naturalScrolling = true;
-    };
-  };
-  services.kanata = { 
-    enable = true;
-    keyboards = { default = { configFile = ../.config/kanata/kanata.kbd; }; };
-  };
-
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
+  nixpkgs.config.allowUnfree = true;
+  programs.firefox.enable = true;
   environment.systemPackages = with pkgs; [
     arandr
     baobab
-    bat
-    btop
+    fastfetch
     feh
-    firefox
+    ffmpeg
     gcc
     ghostty
     git
+    gnumake
+    gparted
     home-manager
     htop
+    killall
     neofetch
     neovim
-    nixfmt-classic
     pavucontrol
-    ripgrep
-    rofi
-    rustup
+    # pnpm
+    (python3.withPackages (
+      ps: with ps; [
+        numpy
+        pandas
+        requests
+      ]
+    ))
+    # rofi
+    # rustup
     unzip
     # wezterm
     wget
     xclip
     zathura
+    zip
   ];
 
-  programs.zsh.enable = true;
+  programs.virt-manager.enable = true;
+  virtualisation.libvirtd.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+  networking.firewall = {
+    trustedInterfaces = [ "virbr0" ];
+  };
 }

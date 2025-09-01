@@ -1,10 +1,15 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./common.nix ./laptop-hardware-configuration.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -13,10 +18,6 @@
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -39,9 +40,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -52,7 +50,7 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -67,19 +65,32 @@
     #media-session.enable = true;
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.pharaok = {
     isNormalUser = true;
     description = "pharaok";
-    extraGroups = [ "networkmanager" "wheel" "uinput" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "uinput"
+      "libvirtd"
+    ];
     packages = with pkgs; [ ];
   };
 
-  # Install firefox.
-  programs.firefox.enable = true;
+  services.libinput = {
+    enable = true;
+    mouse = {
+      accelProfile = "flat";
+    };
+    touchpad = {
+      naturalScrolling = true;
+    };
+  };
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+  services.kanata = {
+    enable = true;
+    keyboards.default.configFile = ../../../.config/kanata/kanata.kbd;
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
