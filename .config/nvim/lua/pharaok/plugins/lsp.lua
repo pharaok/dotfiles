@@ -168,6 +168,8 @@ return {
       vim.g.tex_flavor = "latex"
       vim.g.vimtex_view_method = "zathura"
       vim.g.vimtex_quickfix_mode = 0
+      vim.g.vimtex_compiler_method = "latexmk"
+
       -- vim.o.conceallevel = 2
       -- vim.g.tex_conceal = "abmgs"
       vim.g.vimtex_syntax_conceal = { math_bounds = 0 }
