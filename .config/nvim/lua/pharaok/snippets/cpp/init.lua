@@ -28,7 +28,7 @@ local function parse(template)
   return s_nodes
 end
 
-local dir = vim.fn.stdpath("config") .. "/lua/pharaok/snippets/cpp"
+local dir = vim.fn.stdpath("config") .. "/lua/pharaok/snippets/cpp/cp/"
 local cpp_files = vim.fs.find(function(name)
   return name:match("%.cpp$")
 end, { path = dir, limit = math.huge })

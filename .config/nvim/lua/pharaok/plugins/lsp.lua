@@ -46,12 +46,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      {
-        "hrsh7th/cmp-nvim-lsp",
-        -- cond = function()
-        --   return require("pharaok.util").has("nvim-cmp")
-        -- end,
-      },
+      { "saghen/blink.cmp" },
       { "folke/neoconf.nvim", config = true },
       { "folke/neodev.nvim",  config = true },
       {
@@ -92,10 +87,8 @@ return {
     cmd = "Neoconf",
     event = "BufReadPre",
     config = function()
-      local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
-      local opts = { on_attach = on_attach, capabilities = capabilities }
+      local config = { on_attach = on_attach }
 
-      -- vim.lsp.config('*', opts) -- HACK: didn't work
       local servers = {
         "clangd",
         "pylsp",
@@ -104,13 +97,21 @@ return {
         "vimls",
       }
       for _, s in ipairs(servers) do
-        vim.lsp.config(s, opts)
+        config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
+        vim.lsp.config(s, config)
       end
       vim.lsp.config("clangd", {
         on_attach = function(client, bufnr)
           on_attach(client, bufnr)
           vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
         end,
+      })
+      vim.lsp.config("texlab", {
+        settings = {
+          texlab = {
+            formatterLineLength = 80,
+          },
+        },
       })
 
       vim.lsp.enable(servers)

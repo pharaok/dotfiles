@@ -1,3 +1,4 @@
+local remap = require("pharaok.keymap.remap")
 local util = require("pharaok.util")
 
 return {
@@ -37,6 +38,13 @@ return {
           vimgrep_arguments = vimgrep_arguments,
         },
       })
+    end,
+  },
+  {
+    "ggandor/leap.nvim",
+    config = function()
+      remap("n", "S", "<Plug>(leap-from-window)")
+      remap({ "n", "x", "o" }, "s", "<Plug>(leap)")
     end,
   },
 

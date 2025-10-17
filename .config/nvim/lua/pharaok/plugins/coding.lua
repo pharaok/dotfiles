@@ -67,75 +67,33 @@ return {
     end,
   },
   {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-cmdline",
-      "saadparwaiz1/cmp_luasnip",
-      "onsails/lspkind.nvim",
+    "saghen/blink.cmp",
+    dependencies = { "rafamadriz/friendly-snippets" },
+
+    version = "1.*",
+
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+      snippets = { preset = "luasnip" },
+      keymap = { preset = "super-tab" },
+
+      appearance = {
+        nerd_font_variant = "mono",
+      },
+
+      completion = { documentation = { auto_show = false } },
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+      },
+      fuzzy = { implementation = "prefer_rust_with_warning" },
     },
-    event = { "InsertEnter", "CmdlineEnter" },
-    opts = function()
-      local cmp = require("cmp")
-      local lspkind = require("lspkind")
-      return {
-        snippet = {
-          expand = function(args)
-            require("luasnip").lsp_expand(args.body)
-          end,
-        },
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          -- { name = "buffer" },
-          { name = "path" },
-          { name = "luasnip" },
-        }),
-        mapping = cmp.mapping.preset.insert({
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"] = cmp.mapping.abort(),
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
-            elseif require("luasnip").expand_or_jumpable() then
-              vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-expand-or-jump", true, true, true), "")
-            else
-              fallback()
-            end
-          end, {
-            "i",
-            "s",
-          }),
-        }),
-        formatting = { format = lspkind.cmp_format({ mode = vim.g.icons and "symbol" or "text" }) },
-      }
-    end,
-    config = function(_, opts)
-      local cmp = require("cmp")
-      cmp.setup(opts)
-      cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = "buffer" },
-        },
-        view = { entries = "wildmenu" },
-      })
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = "path" },
-          { name = "cmdline" },
-        }),
-      })
-    end,
+    opts_extend = { "sources.default" },
   },
 
   {
     "numToStr/Comment.nvim",
-    dependencies = {"nvim-treesitter/nvim-treesitter", "JoosepAlviste/nvim-ts-context-commentstring"},
+    dependencies = { "nvim-treesitter/nvim-treesitter", "JoosepAlviste/nvim-ts-context-commentstring" },
     event = { "BufReadPre" },
     opts = function()
       return { pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook() }
@@ -146,9 +104,21 @@ return {
     event = { "BufReadPre" },
     config = function()
       require("nvim-autopairs").setup()
-      require("cmp").event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
     end,
   },
   { "kylechui/nvim-surround", version = "*", config = true },
-  { "github/copilot.vim" },
+
+  -- {
+  --   "zbirenbaum/copilot.lua",
+  --   requires = {
+  --     "copilotlsp-nvim/copilot-lsp", -- (optional) for NES functionality
+  --   },
+  --   cmd = "Copilot",
+  --   event = "InsertEnter",
+  --   config = function()
+  --     require("copilot").setup({
+  --       suggestion = { auto_trigger = true },
+  --     })
+  --   end,
+  -- },
 }
