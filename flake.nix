@@ -47,8 +47,8 @@
           modules = [
             ./.nixos/common.nix
             ./.nixos/iso.nix
-            home-manager.nixosModules.home-manager
             nur.modules.nixos.default
+            home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
@@ -76,6 +76,7 @@
           ];
         };
       };
+
       packages.${system}.iso = self.nixosConfigurations.iso.config.system.build.isoImage;
     };
 }
