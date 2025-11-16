@@ -14,12 +14,21 @@ return {
       }
     end,
     config = function(_, opts)
-      require("tokyonight").setup(opts)
-      vim.cmd([[ colorscheme tokyonight ]])
+      -- require("tokyonight").setup(opts)
+      -- vim.cmd([[ colorscheme tokyonight ]])
     end,
   },
   "ellisonleao/gruvbox.nvim",
   "tomasiser/vim-code-dark",
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    opts = { styles = { transparency = vim.g.transparent } },
+    config = function(_, opts)
+      require("rose-pine").setup(opts)
+      vim.cmd([[ colorscheme rose-pine ]])
+    end,
+  },
 
   { "tpope/vim-fugitive", cmd = { "G", "Git" } },
   {

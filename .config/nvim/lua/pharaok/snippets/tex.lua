@@ -48,7 +48,7 @@ local wm = function(t, r)
       trig = t .. "(%s)",
       trigEngine = word_trig_engine,
       snippetType = "autosnippet",
-      condition = is_mathzone
+      condition = is_mathzone,
     },
     f(function(_, snip)
       return r .. snip.captures[1]
@@ -226,13 +226,14 @@ local snippets = {
   -- Greek letters
   s(a(";a"), t("\\alpha")),
   s(a(";b"), t("\\beta")),
-  s(a(";p"), t("\\pi")),
-  s(a(";m"), t("\\mu")),
-  s(a(";t"), t("\\tau")),
-  s(a(";T"), t("\\theta")),
-  s(a(";r"), t("\\rho")),
   s(a(";f"), t("\\phi")),
+  s(a(";h"), t("\\theta")),
+  s(a(";l"), t("\\lambda")),
+  s(a(";m"), t("\\mu")),
   s(a(";o"), t("\\omega")),
+  s(a(";p"), t("\\pi")),
+  s(a(";r"), t("\\rho")),
+  s(a(";t"), t("\\tau")),
 
   -- Symbols
   s(am("!="), t("\\neq")),
@@ -260,7 +261,8 @@ local snippets = {
   set("R"),
 
   -- Linear Algebra
-  s({
+  s(
+    {
       trig = "mat(%d)(%d)",
       regTrig = true,
       hidden = true,
@@ -270,7 +272,8 @@ local snippets = {
         \begin{bmatrix}
             <>
         \end{bmatrix}
-      ]], {
+      ]],
+      {
         d(1, function(_, snip)
           local n = tonumber(snip.captures[1])
           local m = tonumber(snip.captures[2])
@@ -280,15 +283,33 @@ local snippets = {
             for c = 1, m do
               local k = (r - 1) * m + c
               table.insert(nodes, i(k))
-              if c ~= m then table.insert(nodes, t(" & ")) end
+              if c ~= m then
+                table.insert(nodes, t(" & "))
+              end
             end
-            if r ~= n then table.insert(nodes, t({ " \\\\", "    " })) end
+            if r ~= n then
+              table.insert(nodes, t({ " \\\\", "    " }))
+            end
           end
 
           return sn(nil, nodes)
-        end)
+        end),
       }
     )
+  ),
+
+  -- Combinatorics
+  s(
+    { trig = "(%d+)C(%d+)(%s)", regTrig = true, snippetType = "autosnippet" },
+    f(function(_, snip)
+      return ("{}^{%s}C_{%s}%s"):format(unpack(snip.captures))
+    end)
+  ),
+  s(
+    { trig = "(%d+)P(%d+)(%s)", regTrig = true, snippetType = "autosnippet" },
+    f(function(_, snip)
+      return ("{}^{%s}P_{%s}%s"):format(unpack(snip.captures))
+    end)
   ),
 
   -- Discrete Mathematics
@@ -301,7 +322,8 @@ local snippets = {
   s(am("||"), t("\\lor")),
   w("imp", "\\implies"),
   w("iff", "\\iff"),
-  s({
+  s(
+    {
       trig = "truth(%d+)",
       regTrig = true,
       hidden = true,
@@ -316,7 +338,8 @@ local snippets = {
             <>
             \hline
         \end{tabular}
-      ]], {
+      ]],
+      {
         f(function(x, snip)
           local n = tonumber(snip.captures[1])
           local _, count = table.concat(x[1] or {}, ""):gsub("&", "")
@@ -349,7 +372,7 @@ local snippets = {
           end
 
           return sn(nil, nodes)
-        end, { 1 })
+        end, { 1 }),
       }
     )
   ),
