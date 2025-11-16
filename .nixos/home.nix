@@ -10,6 +10,9 @@ let
   dotfilesDir = "./.dotfiles";
 in
 {
+  imports = [
+    ./modules/home-manager/niri.nix
+  ];
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
 
@@ -17,15 +20,6 @@ in
   home.homeDirectory = "/home/${username}";
 
   xdg.enable = true;
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
-    config = {
-      gnome = {
-        default = [ "gnome" ];
-      };
-    };
-  };
   home.activation = {
     cloneDotfiles = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       if [ ! -d "${dotfilesDir}" ]; then
@@ -37,8 +31,7 @@ in
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
-    # discord
-    # flameshot
+    discord
     nerd-fonts.fira-code
     nerd-fonts.symbols-only
     nur.repos.nltch.spotify-adblock
@@ -75,7 +68,12 @@ in
   #
   #  /etc/profiles/per-user/pharaok/etc/profile.d/hm-session-vars.sh
   #
-  programs.zsh.enable = true;
+  programs.bash = {
+    enable = true;
+    shellAliases = {
+      "c++" = "g++ -std=c++23 -O2";
+    };
+  };
   home.sessionVariables = {
     # EDITOR = "nvim";
   };
@@ -107,24 +105,25 @@ in
       texlab
       (texlive.combine {
         inherit (texlive)
-          scheme-small
           latexmk
           enumitem
           environ
           hanging
-          tcolorbox
-          venndiagram
-          tikz-cd
+          minted
           pgfplots
+          scheme-small
+          tcolorbox
+          tikz-cd
+          venndiagram
           ;
       })
     ];
   };
 
-  dconf.settings = {
-    "org/gnome/mutter" = {
-      experimental-features = [ "scale-monitor-framebuffer" ];
-    };
+  programs.direnv = {
+    enable = true;
+    enableBashIntegration = true;
+    nix-direnv.enable = true;
   };
 
   fonts.fontconfig.enable = true;

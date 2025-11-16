@@ -1,8 +1,8 @@
 {
   lib,
+  config,
   pkgs,
   modulesPath,
-  inputs,
   username,
   nur,
   ...
@@ -11,18 +11,20 @@
   imports = [
     "${modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
     "${modulesPath}/installer/cd-dvd/channel.nix"
+
+    ./common.nix
   ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
+
+  isoImage = {
+    squashfsCompression = "lz4";
+  };
 
   networking.networkmanager.enable = true;
   networking.hostName = "nixos-live";
   # networking.interfaces.enp1s0.useDHCP = true;
   # networking.useHostResolvConf = true;
-
-  isoImage = {
-    squashfsCompression = "lz4";
-  };
 
   services.qemuGuest.enable = true;
   services.spice-vdagentd.enable = true; # enable copy and paste between host and guest
@@ -42,10 +44,7 @@
     nur.overlays.default
   ];
 
-  environment.systemPackages = with pkgs; [
-    home-manager
-    dhcpcd
-  ];
+  # FIX: chown does not chowning
   system.activationScripts.copyDotfiles.text = ''
     mkdir -p /home/${username}/.dotfiles
     cp -r ${./..}/. /home/${username}/.dotfiles/
