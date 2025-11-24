@@ -1,0 +1,106 @@
+@import "./rose-pine.css";
+
+window#waybar {
+  font-family: "FiraCode Nerd Font Propo";
+  font-size: 16px;
+  background: @base;
+  color: @text;
+}
+
+* {
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  padding: 4px 0;
+}
+
+#taskbar {
+  font-size: 0;
+  min-height: 0;
+}
+#taskbar button {
+  padding: 0;
+}
+
+#custom-apps {
+  font-size: 24px;
+}
+
+#memory {
+  color: @pine;
+}
+#temperature {
+  color: @love;
+}
+
+#workspaces button.focused {
+  background: @rose;
+  color: @base;
+  font-weight: 800;
+}
+
+#battery {
+  color: @foam;
+}
+#battery.warning {
+  color: @rose;
+}
+#battery.critical {
+  color: @love;
+}
+
+#backlight button {
+  margin: 0;
+  padding: 0;
+}
+#backlight-slider slider,
+#pulseaudio-slider slider {
+  min-height: 0px;
+  min-width: 0px;
+  opacity: 0;
+  background: none;
+}
+#backlight-slider trough,
+#pulseaudio-slider trough {
+  min-height: 80px;
+  min-width: 10px;
+  border-radius: 9999px;
+  background: @overlay;
+}
+#backlight-slider highlight,
+#pulseaudio-slider highlight {
+  min-width: 10px;
+  border-radius: 9999px;
+  background: @text;
+}
+
+#cava {
+  color: @iris;
+  font-size: 8px;
+}
+#cava.silent {
+  font-size: 0;
+}
+
+#custom-powerbutton,
+#custom-reboot,
+#custom-suspend,
+#custom-idlekiller,
+#custom-lock {
+  transition: 100ms ease-in-out;
+}
+#custom-powerbutton {
+  color: @love;
+}
+#custom-reboot:hover {
+  color: @love;
+}
+#custom-suspend:hover {
+  color: @pine;
+}
+#custom-idlekiller:hover {
+  color: @iris;
+}
+#custom-lock:hover {
+  color: @gold;
+}

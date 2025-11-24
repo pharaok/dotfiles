@@ -1,0 +1,232 @@
+{
+  "layer": "top",
+  "position": "left",
+  "width": 40,
+
+  "modules-left": [
+    "group/apps",
+    "mpris",
+    "group/audio",
+    "cava",
+    "memory",
+    "temperature",
+  ],
+  "modules-center": ["niri/workspaces"],
+  "modules-right": [
+    "network",
+    "niri/language",
+    "group/stats",
+    "clock",
+    "group/power",
+  ],
+
+  "memory": {
+    "interval": 30,
+    "format": "{}%\n",
+    "justify": "center",
+  },
+  "temperature": {
+    "format": "{temperatureC}C\n󰔏",
+    "tooltip-format": "",
+    "justify": "center",
+  },
+  "clock": {
+    "tooltip-format": "{calendar}",
+    "format-alt": "{:%d\n%m\n%y}",
+    "format": "{:%I\n%M\n%p}",
+    "interval": 60,
+  },
+
+  "pulseaudio": {
+    // "scroll-step": 1, // %, can be a float
+    "format": "{volume}\n{icon}",
+    "format-bluetooth": "{volume} {icon} {format_source}",
+    "format-bluetooth-muted": " {icon} {format_source}",
+    "format-muted": "MUT\n",
+    "format-source": "{volume} ",
+    "format-source-muted": "",
+    "format-icons": {
+      "headphone": "",
+      "default": ["", "", ""],
+    },
+    "on-click": "pactl set-sink-mute 0 toggle",
+    "tooltip": false,
+    "justify": "center",
+    "reverse-scrolling": true,
+  },
+
+  "pulseaudio/slider": {
+    "min": 0,
+    "max": 100,
+    "orientation": "vertical",
+  },
+
+  "group/audio": {
+    "modules": ["pulseaudio", "pulseaudio/slider"],
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 300,
+      "transition-left-to-right": true,
+    },
+  },
+
+  "backlight": {
+    "format": "{percent}\n{icon}",
+    "format-icons": ["", "", "", "", "", "", "", "", ""],
+    "tooltip": false,
+    "justify": "center",
+    "reverse-scrolling": true,
+  },
+
+  "backlight/slider": {
+    "min": 5,
+    "max": 100,
+    "orientation": "vertical",
+  },
+
+  "group/brightness": {
+    "modules": ["backlight", "backlight/slider"],
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 300,
+      "transition-left-to-right": false,
+    },
+  },
+
+  "battery": {
+    "states": {
+      // "good": 95,
+      "warning": 30,
+      "critical": 15,
+    },
+    "format": "{capacity}%\n{icon}",
+    "format-full": "{capacity}%\n{icon}",
+    "format-charging": "{capacity}%\n",
+    "format-plugged": "{capacity}%\n",
+    "tooltip-format": "{timeTo}",
+    "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    "justify": "center",
+  },
+
+  "mpris": {
+    "format": "{player_icon}",
+    "format-paused": "{status_icon}",
+    "tooltip-format": "{dynamic}",
+    "dynamic-order": ["title", "artist", "album"],
+    "player-icons": {
+      "default": "",
+      "spotify": "",
+    },
+    "status-icons": {
+      "paused": "",
+    },
+    "ignored-players": ["firefox"],
+  },
+  "cava": {
+    "framerate": 30,
+    "autosens": 1,
+    "bars": 6,
+    "hide_on_silence": true,
+    // "format_silent": "quiet",
+    "stereo": false,
+    "method": "pulse",
+    "format-icons": [" ", "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█"],
+    "bar_delimiter": 0,
+    "actions": {
+      "on-click-right": "mode",
+    },
+  },
+  "group/stats": {
+    "modules": ["battery", "group/brightness"],
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 300,
+      "transition-left-to-right": false,
+    },
+  },
+
+  "niri/window": {
+    "tooltip": false,
+    "format": "{}",
+    "rotate": 270,
+    "rewrite": {
+      "^null$": "Desktop",
+    },
+  },
+  "niri/language": {
+    "format": "{shortDescription}",
+  },
+
+  "custom/apps": {
+    "format": "󰀻",
+    "on-click": "niri msg action toggle-overview",
+    "justify": "center",
+    "tooltip": false,
+  },
+
+  "wlr/taskbar": {
+    "format": "{icon}",
+    "on-click": "activate",
+    "on-click-right": "close",
+  },
+
+  "group/apps": {
+    "modules": ["custom/apps", "wlr/taskbar"],
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 300,
+      "transition-left-to-right": true,
+    },
+  },
+
+  "network": {
+    "format-wifi": "",
+    "format-ethernet": "",
+    "format-disconnected": "",
+    "tooltip-format": "{essid} ({ipaddr})",
+  },
+
+  "group/power": {
+    "modules": [
+      "custom/powerbutton",
+      "custom/reboot",
+      "custom/suspend",
+      "custom/lock",
+    ],
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 300,
+      "transition-left-to-right": false,
+    },
+  },
+
+  "custom/powerbutton": {
+    "format": "",
+    "on-click": "poweroff",
+    "tooltip-format": "Power Off",
+  },
+
+  "custom/reboot": {
+    "format": "",
+    "on-click": "reboot",
+    "tooltip-format": "Reboot",
+  },
+
+  "custom/suspend": {
+    "format": "",
+    "on-click": "systemctl suspend",
+    "tooltip-format": "Suspend",
+  },
+
+  "custom/lock": {
+    "format": "",
+    "on-click": "swaylock",
+    "tooltip-format": "Lock",
+  },
+
+  "custom/idlekiller": {
+    "format": "",
+    "on-click": "pkill swayidle || swayidle",
+    "tooltip-format": "Inhibit Idle",
+  },
+}
