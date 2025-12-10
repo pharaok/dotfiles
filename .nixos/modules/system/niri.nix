@@ -5,10 +5,13 @@
   environment.systemPackages = with pkgs; [
     # ags
     brightnessctl
+    cava
     fuzzel # app launcher
     mako # notification daemon
+    pulseaudioFull
     rose-pine-cursor
     rose-pine-gtk-theme
+    swayidle
     swaylock
     swww # wallpaper daemon
     waybar

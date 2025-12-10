@@ -11,7 +11,7 @@ let
 in
 {
   imports = [
-    ./modules/home-manager/niri.nix
+    ./modules/home/niri.nix
   ];
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -31,11 +31,15 @@ in
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
+    # slack
+    cbonsai
     discord
     nerd-fonts.fira-code
     nerd-fonts.symbols-only
     nur.repos.nltch.spotify-adblock
-    # slack
+    pfetch
+    pipes
+    # winboat
     xournalpp
     zoom-us
   ];
@@ -68,12 +72,23 @@ in
   #
   #  /etc/profiles/per-user/pharaok/etc/profile.d/hm-session-vars.sh
   #
-  programs.bash = {
+  programs.zsh = {
     enable = true;
-    shellAliases = {
-      "c++" = "g++ -std=c++23 -O2";
-    };
   };
+  home.shellAliases = {
+    ".." = "cd ..";
+    "..." = "cd ../..";
+    "...." = "cd ../../..";
+  };
+
+  programs.starship.enable = true;
+  programs.eza.enable = true;
+  home.shellAliases = {
+    ls = "eza";
+    ll = "eza -l";
+    la = "eza -la";
+  };
+  programs.fzf.enable = true;
   home.sessionVariables = {
     # EDITOR = "nvim";
   };
@@ -105,11 +120,14 @@ in
       texlab
       (texlive.combine {
         inherit (texlive)
-          latexmk
+          diagbox
           enumitem
           environ
           hanging
+          latexindent
+          latexmk
           minted
+          pict2e
           pgfplots
           scheme-small
           tcolorbox
@@ -122,7 +140,7 @@ in
 
   programs.direnv = {
     enable = true;
-    enableBashIntegration = true;
+    enableZshIntegration = true;
     nix-direnv.enable = true;
   };
 

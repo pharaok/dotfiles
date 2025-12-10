@@ -3,7 +3,7 @@ using namespace std;
 using ll = long long;
 
 // @begin geo
-using T = ll;
+using T = double;
 using pt = complex<T>;
 #define x() real()
 #define y() imag()
@@ -18,7 +18,7 @@ T orient(pt a, pt b, pt c) { return cross(b - a, c - a); }
 double abs(pt p) { return sqrt(norm(p)); }
 double arg(pt p) { return atan2(p.y(), p.x()); }
 
-pt perp(pt p) { return pt(p.x(), -p.y()); }
+pt perp(pt p) { return pt(-p.y(), p.x()); }
 double angle(pt p, pt q) {
   return acos(clamp(dot(p, q) / abs(p) / abs(q), -1.0, 1.0));
 }
@@ -136,7 +136,7 @@ bool half(pt p) {
   assert(p.x() != 0 || p.y() != 0);
   return p.y() > 0 || (p.y() == 0 && p.x() < 0);
 }
-vector<pt> convexHull(vector<pt> pts) {
+vector<pt> convexHull(vector<pt> &pts) {
   pt p0 = *min_element(pts.begin(), pts.end(), [](pt &a, pt &b) {
     return make_pair(a.x(), a.y()) < make_pair(b.x(), b.y());
   });
@@ -176,3 +176,37 @@ int circleLine(pt o, double r, line l, pair<pt, pt> &out) {
   return 1 + sign(h2);
 }
 // @end circle
+
+// @begin welzl
+using circle = pair<double, pt>;
+
+circle welzl(int n, vector<pt> &rem, vector<pt> &p) {
+  if (n == 0 || rem.size() >= 3) {
+    if (rem.empty())
+      return circle();
+
+    pt c;
+    if (rem.size() == 1)
+      c = rem[0];
+    if (rem.size() == 2)
+      c = (rem[0] + rem[1]) / 2.0;
+    if (rem.size() == 3)
+      c = circumCenter(rem[0], rem[1], rem[2]);
+
+    return circle(abs(rem[0] - c), c);
+  }
+  pt q = p[n - 1];
+  circle c = welzl(n - 1, rem, p);
+  if (abs(q - c.second) <= c.first + EPS)
+    return c;
+  rem.push_back(q);
+  auto res = welzl(n - 1, rem, p);
+  rem.pop_back();
+  return res;
+}
+pair<double, pt> minimumEnclosingCircle(vector<pt> &p) {
+  shuffle(p.begin(), p.end(), mt19937(random_device{}()));
+  vector<pt> R;
+  return welzl((int)p.size(), R, p);
+}
+// @end

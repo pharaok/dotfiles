@@ -53,6 +53,8 @@
   services.openssh.enable = true;
 
   nixpkgs.config.allowUnfree = true;
+  programs.zsh.enable = true;
+  users.defaultUserShell = pkgs.zsh;
   programs.firefox.enable = true;
   environment.systemPackages = with pkgs; [
     arandr
@@ -68,7 +70,6 @@
     home-manager
     htop
     killall
-    neofetch
     neovim
     obs-studio
     pavucontrol

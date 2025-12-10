@@ -9,7 +9,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ../../modules/nixos/niri.nix
+    ../../modules/system/niri.nix
   ];
 
   # Bootloader.
@@ -44,11 +44,12 @@
     isNormalUser = true;
     description = "pharaok";
     extraGroups = [
-      "wheel"
-      "networkmanager"
+      "docker"
       "input"
-      "uinput"
       "libvirtd"
+      "networkmanager"
+      "uinput"
+      "wheel"
     ];
     packages = with pkgs; [ ];
   };
@@ -61,6 +62,7 @@
   };
 
   programs.virt-manager.enable = true;
+  virtualisation.docker.enable = true;
   virtualisation.libvirtd.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
   networking.firewall.trustedInterfaces = [ "virbr0" ];
