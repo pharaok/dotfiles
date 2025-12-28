@@ -37,6 +37,14 @@
             ./.nixos/hosts/x13/configuration.nix
           ];
         };
+        pc = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit inputs; };
+          modules = [
+            ./.nixos/common.nix
+            ./.nixos/hosts/pc/configuration.nix
+          ];
+        };
         iso = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {

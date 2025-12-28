@@ -30,14 +30,6 @@
     mouse = {
       accelProfile = "flat";
     };
-    touchpad = {
-      naturalScrolling = true;
-    };
-  };
-
-  services.kanata = {
-    enable = true;
-    keyboards.default.configFile = ../../../.config/kanata/kanata.kbd;
   };
 
   users.users.pharaok = {

@@ -88,7 +88,16 @@ in
     ll = "eza -l";
     la = "eza -la";
   };
-  programs.fzf.enable = true;
+  programs.fzf = {
+    enable = true;
+    defaultOptions = [
+      "--color fg:#908caa,bg:#191724,hl:#ebbcba"
+      "--color fg+:#e0def4,bg+:#26233a,hl+:#ebbcba"
+      "--color border:#403d52,header:#31748f,gutter:#191724"
+      "--color spinner:#f6c177,info:#9ccfd8"
+      "--color pointer:#c4a7e7,marker:#eb6f92,prompt:#908caa"
+    ];
+  };
   home.sessionVariables = {
     # EDITOR = "nvim";
   };
@@ -118,23 +127,65 @@ in
         ]
       ))
       texlab
-      (texlive.combine {
-        inherit (texlive)
+      (texlive.withPackages (
+        ps: with ps; [
+          scheme-medium
+
+          latexmk
+          latexindent
+
           diagbox
           enumitem
           environ
           hanging
-          latexindent
-          latexmk
           minted
           pict2e
           pgfplots
-          scheme-small
           tcolorbox
           tikz-cd
           venndiagram
-          ;
-      })
+
+          framed
+          lipsum
+          tkz-euclide
+          background
+          upquote
+          everypage
+
+          amsmath
+          # amssymb
+          iftex
+          yhmath
+          derivative
+          listings
+          # mathrsfs
+          # textcomp
+          enumitem
+          todonotes
+          multirow
+          ellipsis
+          epigraph
+          mathtools
+          microtype
+          xstring
+          wrapfig
+          tikz-cd
+          isodate
+          xcolor
+          hyperref
+          cleveref
+          # amsthm
+          thmtools
+          mdframed
+          xpatch
+          fancyhdr
+          # scrlayer-scrpage
+          zref
+          needspace
+          nextpage
+          substr
+        ]
+      ))
     ];
   };
 
