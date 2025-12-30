@@ -31,6 +31,18 @@
       options = [ "fmask=0077" "dmask=0077" ];
     };
 
+  fileSystems."/mnt/hdd" =
+    { device = "/dev/disk/by-uuid/13B0FF9F12BE999F";
+      fsType = "ntfs";
+      options = [ "rw" "uid=1000" "gid=100" "dmask=0022" "fmask=0133" "windows_names" ];
+    };
+  fileSystems."/home/pharaok/Downloads" =
+    { device = "/mnt/hdd/Downloads";
+      fsType = "none";
+      options = [ "bind" ];
+      depends = [ "/mnt/hdd" ];
+    };
+
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
