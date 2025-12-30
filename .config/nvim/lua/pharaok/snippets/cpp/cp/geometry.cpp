@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
@@ -209,4 +210,34 @@ pair<double, pt> minimumEnclosingCircle(vector<pt> &p) {
   vector<pt> R;
   return welzl((int)p.size(), R, p);
 }
-// @end
+// @end welzl
+
+// @begin minkowskiSum
+vector<pt> minkowskiSum(vector<pt> A, vector<pt> B) {
+  int n = A.size(), m = B.size();
+
+  auto rot = [&](vector<pt> &P) {
+    int mi =
+        min_element(P.begin(), P.end(),
+                    [](pt a, pt b) {
+                      return make_pair(a.y(), a.x()) < make_pair(b.y(), b.x());
+                    }) -
+        P.begin();
+    rotate(P.begin(), P.begin() + mi, P.end());
+  };
+  rot(A), rot(B);
+
+  vector<pt> result;
+  int i = 0, j = 0;
+  while (i < n || j < m) {
+    result.push_back(A[i] + B[j]);
+    auto cr = cross(A[(i + 1) % n] - A[i], B[(j + 1) % m] - B[j]);
+    if (cr >= 0 && i < n)
+      i++;
+    if (cr <= 0 && j < m)
+      j++;
+  }
+  return result;
+}
+
+// @end minkowskiSum
