@@ -30,6 +30,11 @@ local word_trig_engine = function()
     end
   end
 end
+local function preceded_by_backslash(line_to_cursor, matched_trigger)
+  local text_before = line_to_cursor:sub(1, -1 - #matched_trigger)
+  local backslashes = text_before:match("(\\*)%S*$")
+  return #backslashes > 0
+end
 local w = function(t, r)
   return s(
     {
@@ -60,7 +65,9 @@ local am = function(t) -- auto mathzone snippet trigger
     trig = t,
     wordTrig = false,
     snippetType = "autosnippet",
-    condition = is_mathzone,
+    condition = function(line_to_cursor, matched_trigger)
+      return is_mathzone() and not preceded_by_backslash(line_to_cursor, matched_trigger)
+    end,
   }
 end
 local set = function(set_symbol)
@@ -81,13 +88,28 @@ local snippets = {
     "!!!",
     fmta(
       [[
-        \documentclass[12pt]{article}
+        \documentclass[a4paper,12pt]{article}
 
         \usepackage{amsmath}
         \usepackage{amssymb}
+        \usepackage{amsthm}
+
+        \usepackage{geometry}
+        \geometry{margin=1in}
+
+        \usepackage{fancyhdr}
+        \pagestyle{fancy}
+        \fancyhead[L]{Farouk Youssef}
+        \fancyhead[C]{}
+        \fancyhead[R]{}
+
+        \usepackage{enumitem}
+        \setlist[enumerate]{format=\bfseries}
+
+        \renewcommand\qedsymbol{$\blacksquare$}
 
         \begin{document}
-            <>
+          <>
         \end{document}
       ]],
       { i(0) }
@@ -106,13 +128,13 @@ local snippets = {
     snippetType = "autosnippet",
   }, fmta("\\sqrt[<>]{<>}", { i(1), i(2) })),
 
-  s({ trig = "fr", hidden = true }, fmta("\\frac{<>}{<>}", { i(1), i(2) })), -- HACK: annoying when trying to type F, so I made it hidden
+  s({ trig = "fr" }, fmta("\\frac{<>}{<>}", { i(1), i(2) })),
   s(
     "en",
     fmta(
       [[
         \begin{<>}
-            <>
+          <>
         \end{<>}
       ]],
       { i(1), i(2), rep(1) }
@@ -139,14 +161,13 @@ local snippets = {
   s("limx", fmta("\\lim\\limits_{x \\to <>}", i(1))),
   w("int", "\\int"),
 
-  s("mi", fmta("$<>$", i(1))),
-  s("mm", fmta("$$<>$$", i(1))),
+  s("mi", fmta("\\(<>\\)", i(1))),
   s(
     "mk",
     fmta(
       [[
         \[
-            <>
+          <>
         \]
       ]],
       i(1)
@@ -157,8 +178,19 @@ local snippets = {
     fmta(
       [[
         \begin{equation}
-            <>
+          <>
         \end{equation}
+      ]],
+      i(1)
+    )
+  ),
+  s(
+    "pr",
+    fmta(
+      [[
+        \begin{proof}
+          <>
+        \end{proof}
       ]],
       i(1)
     )
@@ -169,7 +201,7 @@ local snippets = {
     fmta(
       [[
         \begin{enumerate}
-            <>
+          <>
         \end{enumerate}
       ]],
       i(1)
@@ -180,7 +212,7 @@ local snippets = {
     fmta(
       [[
         \begin{itemize}
-            <>
+          <>
         \end{itemize}
       ]],
       i(1)
@@ -226,6 +258,7 @@ local snippets = {
   -- Greek letters
   s(a(";a"), t("\\alpha")),
   s(a(";b"), t("\\beta")),
+  s(a(";e"), t("\\epsilon")),
   s(a(";f"), t("\\phi")),
   s(a(";h"), t("\\theta")),
   s(a(";l"), t("\\lambda")),
@@ -259,6 +292,7 @@ local snippets = {
   set("Z"),
   set("Q"),
   set("R"),
+  set("C"),
 
   -- Linear Algebra
   s(
@@ -270,7 +304,7 @@ local snippets = {
     fmta(
       [[
         \begin{bmatrix}
-            <>
+          <>
         \end{bmatrix}
       ]],
       {
@@ -331,12 +365,12 @@ local snippets = {
     fmta(
       [[
         \begin{tabular}{| <> |}
-            \hline
-            <> & <> \\
-            \hline
-            \hline
-            <>
-            \hline
+          \hline
+          <> & <> \\
+          \hline
+          \hline
+          <>
+          \hline
         \end{tabular}
       ]],
       {
