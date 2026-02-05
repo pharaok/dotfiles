@@ -51,7 +51,7 @@ return {
       { "folke/neodev.nvim",  config = true },
       {
         "mrcjkb/rustaceanvim",
-        version = "^5", -- Recommended
+        version = "^6", -- Recommended
         lazy = false,
         init = function()
           vim.g.rustaceanvim = {
@@ -67,6 +67,7 @@ return {
         cond = function()
           return true
         end,
+        opts = { on_attach = on_attach },
       },
       {
         "b0o/SchemaStore.nvim",
@@ -135,9 +136,6 @@ return {
         null_ls.builtins.formatting.clang_format,
         null_ls.builtins.formatting.nixfmt,
       }
-      -- if require("pharaok.util").has("typescript.nvim") then
-      --   table.insert(sources, require("typescript.extensions.null-ls.code-actions"))
-      -- end
 
       null_ls.setup({
         sources = sources,
