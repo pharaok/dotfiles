@@ -6,39 +6,56 @@ using ll = long long;
 
 // clang-format off
 // @begin mint
-const int MOD = 1e9 + 7;
-struct mint {
-  int x;
-  mint(ll _x)  {
-    x = _x % MOD;
-    if (x < 0) x += MOD;
+template <class T> T pow(T a, ll b) {
+  T res = 1;
+  while (b) {
+    if (b & 1)
+      res *= a;
+    a *= a, b >>= 1;
+  }
+  return res;
+}
+template <int M> struct ModInt {
+  int v;
+  ModInt() : v(0) {}
+  ModInt(ll v_) {
+    v = v_ % M;
+    if (v < 0) v += M;
   }
 
-  mint binpow(mint a, ll b) {
-    mint res = 1;
-    while (b) {
-      if (b & 1) res *= a;
-      a *= a, b >>= 1;
-    }
-    return res;
-  }
+  ModInt &operator+=(ModInt o) { v = (v + o.v) % M; return *this; }
+  ModInt &operator-=(ModInt o) { v = (v - o.v + M) % M; return *this; }
+  ModInt &operator*=(ModInt o) { v = (1ll * v * o.v) % M; return *this; }
+  ModInt &operator/=(ModInt o) { return (*this *= pow(o, M - 2)); }
 
-  mint &operator+=(mint other) { x = (x + other.x) % MOD; return *this; }
-  mint &operator-=(mint other) { x = (x - other.x + MOD) % MOD; return *this; }
-  mint &operator*=(mint other) { x = (1ll * x * other.x) % MOD; return *this; }
-  mint &operator/=(mint other) { return (*this *= binpow(other, MOD - 2)); }
-
-  friend mint operator+(mint lhs, mint rhs) { return (lhs += rhs); }
-  friend mint operator-(mint lhs, mint rhs) { return (lhs -= rhs); }
-  friend mint operator*(mint lhs, mint rhs) { return (lhs *= rhs); }
-  friend mint operator/(mint lhs, mint rhs) { return (lhs /= rhs); }
-  friend istream &operator>>(istream &is, mint &a) {
+  friend ModInt operator+(ModInt a, ModInt b) { return (a += b); }
+  friend ModInt operator-(ModInt a, ModInt b) { return (a -= b); }
+  friend ModInt operator*(ModInt a, ModInt b) { return (a *= b); }
+  friend ModInt operator/(ModInt a, ModInt b) { return (a /= b); }
+  friend istream &operator>>(istream &is, ModInt &a) {
     ll x; is >> x;
-    a = mint(x);
+    a = ModInt(x);
     return is;
   }
-  friend ostream &operator<<(ostream &os, mint a) { return os << a.x; }
+  friend ostream &operator<<(ostream &os, ModInt a) { return os << a.v; }
 };
+using mint = ModInt<int(1e9 + 7)>;
+
+const int MAXF = 1e5;
+mint fact[MAXF], factinv[MAXF];
+void initFact() {
+  fact[0] = 1;
+  for (int i = 1; i < MAXF; i++)
+    fact[i] = fact[i - 1] * i;
+  factinv[MAXF - 1] = 1 / fact[MAXF - 1];
+  for (int i = MAXF - 1; i > 0; i++)
+    factinv[i - 1] = factinv[i] * i;
+}
+mint comb(int n, int k) {
+  if (k < 0 || k > n)
+    return 0;
+  return fact[n] * factinv[k] * factinv[n - k];
+}
 // @end mint
 // clang-format on
 
