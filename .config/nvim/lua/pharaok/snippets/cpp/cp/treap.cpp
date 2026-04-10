@@ -112,4 +112,16 @@ TreapP find(TreapP t) {
     t = t->parent;
   return t;
 }
+int order(TreapP t) {
+  if (t == nullptr)
+    return 0;
+  int ret = 1 + size(t->left);
+  while (t->parent != nullptr) {
+    TreapP par = t->parent;
+    if (par->right == t)
+      ret += 1 + size(par->left);
+    t = par;
+  }
+  return ret;
+}
 // @end treap
