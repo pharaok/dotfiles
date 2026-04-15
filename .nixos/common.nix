@@ -37,6 +37,11 @@
   };
 
   services.displayManager.gdm.enable = true;
+  # services.logind = {
+  #   lidSwitch = "ignore";
+  #   lidSwitchDocked = "ignore";
+  #   lidSwitchExternalPower = "ignore";
+  # };
   # services.desktopManager.gnome.enable = true;
 
   # Enable sound with pipewire.
@@ -83,8 +88,8 @@
     ))
     unzip
     usbutils
+    vlc
     wget
-    xclip
     zathura
     zip
   ];

@@ -4,6 +4,7 @@
 
   environment.systemPackages = with pkgs; [
     # ags
+    # waybar
     brightnessctl
     cava
     fuzzel # app launcher
@@ -14,7 +15,6 @@
     swayidle
     swaylock
     swww # wallpaper daemon
-    waybar
     wl-clipboard
     xwayland-satellite
     yazi
@@ -35,6 +35,7 @@
       };
     };
   };
+  services.upower.enable = true;
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";

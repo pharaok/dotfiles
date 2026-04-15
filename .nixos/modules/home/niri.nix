@@ -11,6 +11,7 @@
       package = pkgs.rose-pine-icon-theme;
     };
   };
+
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
@@ -22,5 +23,6 @@
       "image/tiff" = "feh.desktop";
     };
   };
+
   services.playerctld.enable = true;
 }

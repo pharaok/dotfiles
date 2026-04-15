@@ -12,6 +12,7 @@ in
 {
   imports = [
     ./modules/home/niri.nix
+    ./modules/home/noctalia.nix
   ];
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -169,13 +170,16 @@ in
           microtype
           xstring
           wrapfig
+          circuitikz
           tikz-cd
+          tikz-timing
           isodate
           xcolor
           hyperref
           cleveref
           # amsthm
           thmtools
+          bytefield
           mdframed
           xpatch
           fancyhdr
@@ -184,6 +188,8 @@ in
           needspace
           nextpage
           substr
+          svg
+          transparent
         ]
       ))
     ];

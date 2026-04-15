@@ -50,6 +50,7 @@
       "networkmanager"
       "uinput"
       "wheel"
+      "dialout"
     ];
     packages = with pkgs; [ ];
   };
