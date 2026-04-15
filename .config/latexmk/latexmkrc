@@ -1,0 +1,5 @@
+$aux_dir = 'build';
+$emulate_aux = 1;
+
+$out_dir = '.';
+$pdf_mode = 1;
