@@ -267,10 +267,28 @@ layout {
 // which may be more convenient to use.
 // See the binds section below for more spawn examples.
 
-// This line starts waybar, a commonly used bar for Wayland compositors.
-spawn-at-startup "waybar"
+spawn-at-startup "noctalia-shell"
+window-rule {
+  // Rounded corners for a modern look.
+  geometry-corner-radius 20
+
+  // Clips window contents to the rounded corner boundaries.
+  clip-to-geometry true
+}
+
+debug {
+  // Allows notification actions and window activation from Noctalia.
+  honor-xdg-activation-with-invalid-serial
+}
+// Set the overview wallpaper on the backdrop.
+layer-rule {
+  match namespace="^noctalia-overview*"
+  place-within-backdrop true
+}
+
+
 spawn-sh-at-startup "python3 ./window_rules.py" // dynamic window rules
-spawn-sh-at-startup "swww-daemon && swww img ~/.config/niri/rose_pine_contourline.png"
+// spawn-sh-at-startup "swww-daemon && swww img ~/.config/niri/rose_pine_contourline.png"
 // spawn-sh-at-startup "swww-daemon --namespace overview && swww img ~/.config/niri/rose.png --namespace overview"
 
 
