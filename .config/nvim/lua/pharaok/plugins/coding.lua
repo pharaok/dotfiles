@@ -85,6 +85,9 @@ return {
       completion = { documentation = { auto_show = false } },
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
+        per_filetype = {
+          codecompanion = { "codecompanion" },
+        },
       },
       fuzzy = { implementation = "prefer_rust_with_warning" },
     },
@@ -108,17 +111,13 @@ return {
   },
   { "kylechui/nvim-surround", version = "*", config = true },
 
-  -- {
-  --   "zbirenbaum/copilot.lua",
-  --   requires = {
-  --     "copilotlsp-nvim/copilot-lsp", -- (optional) for NES functionality
-  --   },
-  --   cmd = "Copilot",
-  --   event = "InsertEnter",
-  --   config = function()
-  --     require("copilot").setup({
-  --       suggestion = { auto_trigger = true },
-  --     })
-  --   end,
-  -- },
+  {
+    "olimorris/codecompanion.nvim",
+    version = "^19.0.0",
+    opts = {},
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+  },
 }
