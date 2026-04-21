@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
@@ -239,5 +238,4 @@ vector<pt> minkowskiSum(vector<pt> A, vector<pt> B) {
   }
   return result;
 }
-
 // @end minkowskiSum

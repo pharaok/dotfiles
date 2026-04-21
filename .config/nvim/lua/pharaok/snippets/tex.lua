@@ -161,7 +161,7 @@ local snippets = {
   s("limx", fmta("\\lim\\limits_{x \\to <>}", i(1))),
   w("int", "\\int"),
 
-  s("mi", fmta("\\( <> \\)", i(1))),
+  s("mi", fmta("$<>$", i(1))),
   s(
     "mk",
     fmta(
