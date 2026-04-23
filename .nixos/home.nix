@@ -8,6 +8,51 @@
 }:
 let
   dotfilesDir = "./.dotfiles";
+
+  evanPkgs =
+    ps: with ps; [
+      amsmath
+      amsfonts
+      iftex
+      yhmath
+      derivative
+      # patchasy-sty
+      asymptote
+      xcolor
+      biblatex
+      hyperref
+      cleveref
+      amscls
+      thmtools
+      mdframed
+      xpatch
+      # von-sty
+      listings
+      jknapltx
+      enumitem
+      todonotes
+      multirow
+      ellipsis
+      epigraph
+      mathtools
+      microtype
+      xstring
+      wrapfig
+      isodate
+      tikz-cd
+      fancyhdr
+      koma-script
+      luatexja
+      fontspec
+      babel
+      cjk
+      ucs
+      answers
+
+      nextpage
+      zref
+      needspace
+    ];
 in
 {
   imports = [
@@ -40,7 +85,7 @@ in
     nur.repos.nltch.spotify-adblock
     pfetch
     pipes
-    # winboat
+    rnote
     xournalpp
     zoom-us
   ];
@@ -55,6 +100,19 @@ in
       "${config.xdg.configHome}" = {
         source = builtins.filterSource exclude ../.config;
         recursive = true;
+      };
+
+      "texmf/tex/latex/evan/evan.sty".source = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/vEnhance/dotfiles/main/texmf/tex/latex/evan/evan.sty";
+        hash = "sha256-pqRokMQBgAnq8RFHIMQfFXcv43QqkdqwnBfouGZM+qk=";
+      };
+      "texmf/tex/latex/von/von.sty".source = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/vEnhance/dotfiles/main/texmf/tex/latex/von/von.sty";
+        hash = "sha256-/bCA4xaNG4PDBr/iBYoDKlF1Agm77vCuHvHr2FfAYTk=";
+      };
+      "texmf/tex/latex/patchasy/patchasy.sty".source = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/vEnhance/dotfiles/main/texmf/tex/latex/patchasy/patchasy.sty";
+        hash = "sha256-Zb4nVkHUXJM/PjZ95c8W1LMSozgqM8WUYMch6oAtuXE=";
       };
     };
 
@@ -129,68 +187,33 @@ in
       ))
       texlab
       (texlive.withPackages (
-        ps: with ps; [
-          scheme-medium
+        ps:
+        with ps;
+        lib.unique (
+          [
+            scheme-medium
 
-          latexmk
-          latexindent
+            latexmk
+            latexindent
 
-          diagbox
-          enumitem
-          environ
-          hanging
-          minted
-          pict2e
-          pgfplots
-          tcolorbox
-          tikz-cd
-          venndiagram
-
-          framed
-          lipsum
-          tkz-euclide
-          background
-          upquote
-          everypage
-
-          amsmath
-          # amssymb
-          iftex
-          yhmath
-          derivative
-          listings
-          # mathrsfs
-          # textcomp
-          enumitem
-          todonotes
-          multirow
-          ellipsis
-          epigraph
-          mathtools
-          microtype
-          xstring
-          wrapfig
-          circuitikz
-          tikz-cd
-          tikz-timing
-          isodate
-          xcolor
-          hyperref
-          cleveref
-          # amsthm
-          thmtools
-          bytefield
-          mdframed
-          xpatch
-          fancyhdr
-          # scrlayer-scrpage
-          zref
-          needspace
-          nextpage
-          substr
-          svg
-          transparent
-        ]
+            diagbox
+            enumitem
+            environ
+            minted
+            hanging
+            pict2e
+            pgfplots
+            tcolorbox
+            venndiagram
+            amsmath
+            fancyhdr
+            tikz-cd
+            tikz-timing
+            circuitikz
+            forest
+          ]
+          ++ (evanPkgs ps)
+        )
       ))
     ];
   };
