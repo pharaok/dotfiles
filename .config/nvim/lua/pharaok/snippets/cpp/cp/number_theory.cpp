@@ -48,7 +48,7 @@ void initFact() {
   for (int i = 1; i < MAXF; i++)
     fact[i] = fact[i - 1] * i;
   factinv[MAXF - 1] = 1 / fact[MAXF - 1];
-  for (int i = MAXF - 1; i > 0; i++)
+  for (int i = MAXF - 1; i > 0; i--)
     factinv[i - 1] = factinv[i] * i;
 }
 mint comb(int n, int k) {
