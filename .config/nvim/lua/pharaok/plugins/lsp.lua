@@ -2,7 +2,7 @@ local has = require("pharaok.util").has
 
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 local function on_attach(client, bufnr)
-  if client.supports_method("textDocument/formatting") then
+  if client:supports_method("textDocument/formatting") then
     -- vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
     vim.api.nvim_create_autocmd("BufWritePre", {
       group = augroup,
@@ -48,7 +48,7 @@ return {
     dependencies = {
       { "saghen/blink.cmp" },
       { "folke/neoconf.nvim", config = true },
-      { "folke/neodev.nvim",  config = true },
+      { "folke/neodev.nvim", config = true },
       {
         "mrcjkb/rustaceanvim",
         version = "^6", -- Recommended
@@ -140,7 +140,7 @@ return {
       null_ls.setup({
         sources = sources,
         on_attach = function(client, bufnr)
-          if client.supports_method("textDocument/formatting") then
+          if client:supports_method("textDocument/formatting") then
             -- vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
             vim.api.nvim_create_autocmd("BufWritePre", {
               group = augroup,

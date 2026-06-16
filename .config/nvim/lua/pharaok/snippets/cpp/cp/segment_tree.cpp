@@ -232,3 +232,57 @@ struct Info {
 using LazySegTree = LazySegmentTree<Info, Tag>;
 // @end segTreeLazy
 } // namespace Lazy
+
+namespace Persistent {
+// @begin segTreePersistent
+struct Info {
+  ll v;
+  Info(ll v_) : v(v_) {}
+  Info() : Info(0) {} // IDEN
+
+  friend Info op(Info a, Info b) {
+    Info ret;
+    ret.v = a.v + b.v;
+    return ret;
+  }
+};
+using T = Info;
+struct PSTNode {
+  PSTNode *left, *right;
+  T val;
+
+  PSTNode(T v) : left(nullptr), right(nullptr), val(v) {}
+  PSTNode(PSTNode *l, PSTNode *r) : left(l), right(r), val(T()) {
+    if (l != nullptr)
+      val = op(l->val, val);
+    if (r != nullptr)
+      val = op(val, r->val);
+  }
+};
+template <class U> PSTNode *build(vector<U> &a, int xl, int xr) {
+  if (xr - xl == 1)
+    return new PSTNode(a[xl]);
+  int xm = (xl + xr) / 2;
+  return new PSTNode(build(a, xl, xm), build(a, xm, xr));
+}
+T query(PSTNode *x, int l, int r, int xl, int xr) {
+  if (r <= l)
+    return T();
+  if (l == xl && r == xr)
+    return x->val;
+  int xm = (xl + xr) / 2;
+  return op(query(x->left, l, min(r, xm), xl, xm),
+            query(x->right, max(l, xm), r, xm, xr));
+}
+PSTNode *update(PSTNode *x, int i, T v, int xl, int xr) {
+  if (xr - xl == 1)
+    return new PSTNode(op(x->val, v));
+  int xm = (xl + xr) / 2;
+  if (i < xm)
+    return new PSTNode(update(x->left, i, v, xl, xm), x->right);
+  else
+    return new PSTNode(x->left, update(x->right, i, v, xm, xr));
+}
+using PST = PSTNode *;
+// @end segTreePersistent
+} // namespace Persistent

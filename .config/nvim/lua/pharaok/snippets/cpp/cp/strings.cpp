@@ -129,3 +129,96 @@ struct Trie {
 };
 // @end binaryTrie
 } // namespace BinaryTrie
+
+namespace stringHash {
+template <class T> T binpow(T a, ll b) {
+  T res = 1;
+  while (b) {
+    if (b & 1)
+      res *= a;
+    a *= a, b >>= 1;
+  }
+  return res;
+}
+template <int M> struct ModInt {
+  int v;
+  ModInt() : v(0) {}
+  ModInt(ll v_) {
+    v = v_ % M;
+    if (v < 0)
+      v += M;
+  }
+
+  bool operator==(ModInt o) const { return v == o.v; };
+  bool operator!=(ModInt o) const { return v != o.v; };
+
+  ModInt &operator+=(ModInt o) {
+    v = (v + o.v) % M;
+    return *this;
+  }
+  ModInt &operator-=(ModInt o) {
+    v = (v - o.v + M) % M;
+    return *this;
+  }
+  ModInt &operator*=(ModInt o) {
+    v = (1ll * v * o.v) % M;
+    return *this;
+  }
+  ModInt &operator/=(ModInt o) { return (*this *= binpow(o, M - 2)); }
+
+  friend ModInt operator+(ModInt a, ModInt b) { return (a += b); }
+  friend ModInt operator-(ModInt a, ModInt b) { return (a -= b); }
+  friend ModInt operator*(ModInt a, ModInt b) { return (a *= b); }
+  friend ModInt operator/(ModInt a, ModInt b) { return (a /= b); }
+  friend istream &operator>>(istream &is, ModInt &a) {
+    ll x;
+    is >> x;
+    a = ModInt(x);
+    return is;
+  }
+  friend ostream &operator<<(ostream &os, ModInt a) { return os << a.v; }
+};
+
+// @begin stringHash
+
+using M0 = ModInt<1'000'002'821>;
+using M1 = ModInt<1'000'002'823>;
+// using M3 = ModInt<1'000'002'827>;
+struct H {
+  M0 h0;
+  M1 h1;
+  H operator+(H o) { return {h0 + o.h0, h1 + o.h1}; }
+  H operator-(H o) { return {h0 - o.h0, h1 - o.h1}; }
+  H operator*(H o) { return {h0 * o.h0, h1 * o.h1}; }
+  H operator/(H o) { return {h0 / o.h0, h1 / o.h1}; }
+  bool operator==(H o) { return h0 == o.h0 && h1 == o.h1; }
+};
+const H BASE = {31, 37};
+const int MAXL = 1e6;
+vector<H> hpow, invhpow;
+void initPow() {
+  hpow[0] = {1, 1};
+  for (int i = 1; i < MAXL; i++)
+    hpow[i] = hpow[i - 1] * BASE;
+  invhpow[MAXL - 1] = H(1, 1) / hpow[MAXL - 1];
+  for (int i = MAXL - 2; i >= 0; i--) {
+    auto [p0, p1] = invhpow[i + 1];
+    invhpow[i] = invhpow[i + 1] * BASE;
+  }
+}
+vector<H> stringHashes(string &s) {
+  int n = s.size();
+  vector<H> hashes(n + 1);
+  H cur = {1, 1};
+  for (int i = 0; i < n; i++) {
+    int x = s[i] - 'a' + 1;
+    hashes[i + 1] = hashes[i] + H(x, x) * cur;
+    cur = cur * BASE;
+  }
+  return hashes;
+}
+H substringHash(vector<H> &hashes, int l, int r) {
+  return (hashes[r + 1] - hashes[l]) * invhpow[l];
+}
+// @end stringHash
+} // namespace stringHash

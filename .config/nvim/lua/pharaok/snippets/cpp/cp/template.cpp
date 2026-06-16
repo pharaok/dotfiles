@@ -34,12 +34,12 @@ int main() {
 using namespace __gnu_pbds;
 
 template <class T>
-using ordered_set =
+using orderedSet =
     tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 template <class T>
-using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag,
-                              tree_order_statistics_node_update>;
+using orderedMultiset = tree<T, null_type, less_equal<T>, rb_tree_tag,
+                             tree_order_statistics_node_update>;
 // @end orderedSet
 
 // @begin rng
@@ -63,6 +63,6 @@ struct custom_hash {
   }
 };
 template <class T, class U>
-using unordered_map = unordered_map<T, U, custom_hash>;
-template <class T> using unordered_set = unordered_set<T, custom_hash>;
+using unorderedMap = unordered_map<T, U, custom_hash>;
+template <class T> using unorderedSet = unordered_set<T, custom_hash>;
 // @end customHash

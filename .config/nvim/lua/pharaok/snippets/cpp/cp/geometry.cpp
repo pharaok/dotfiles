@@ -8,8 +8,8 @@ using pt = complex<T>;
 #define x() real()
 #define y() imag()
 
-double PI = acos(-1);
-T EPS = 1e-9;
+const double PI = acos(-1);
+const double EPS = 1e-9;
 
 int sign(double x) { return x < -EPS ? -1 : x > EPS ? 1 : 0; }
 T dot(pt a, pt b) { return (conj(a) * b).x(); }
@@ -20,13 +20,14 @@ double arg(pt p) { return atan2(p.y(), p.x()); }
 
 pt perp(pt p) { return pt(-p.y(), p.x()); }
 double angle(pt p, pt q) {
-  return acos(clamp(dot(p, q) / abs(p) / abs(q), -1.0, 1.0));
+  return acos(clamp(dot(p, q) / abs(p) / abs(q), T(-1), T(1)));
 }
 double orientedAngle(pt a, pt b, pt c) {
   if (orient(a, b, c) < 0)
     return 2 * PI - angle(b - a, c - a);
   return angle(b - a, c - a);
 }
+pt rot(pt p, T a) { return p * polar(T(1), a); }
 // @end geo
 
 // @begin line
@@ -166,10 +167,19 @@ pt circumCenter(pt a, pt b, pt c) {
   assert(cross(b, c) != 0); // no circumcircle if collinear
   return a + perp(b * norm(c) - c * norm(b)) / cross(b, c) / T(2);
 }
+bool circleCircle(pt c1, double r1, pt c2, double r2, pair<pt, pt> &out) {
+  double d = abs(c2 - c1);
+  if (d < abs(r2 - r1) || d > r1 + r2) // triangle inequalities
+    return false;
+  double alpha = acos((d * d + r1 * r1 - r2 * r2) / (2 * d * r1));
+  pt rad = (c2 - c1) / d * r1; // vector C1C2 resized to have length d
+  out = {c1 + rot(rad, -alpha), c1 + rot(rad, alpha)};
+  return true;
+}
 int circleLine(pt o, double r, line l, pair<pt, pt> &out) {
   double h2 = r * r - l.sqDist(o);
-  if (h2 >= 0) {                            // the line touches the circle
-    pt p = l.proj(o);                       // point P
+  if (h2 >= 0) { // the line touches the circle
+    pt p = l.proj(o);
     pt h = l.v * T(sqrt(h2)) / T(abs(l.v)); // vector parallel to l, of length h
     out = {p - h, p + h};
   }

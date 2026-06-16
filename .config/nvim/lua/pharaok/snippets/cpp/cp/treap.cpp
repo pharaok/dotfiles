@@ -5,18 +5,18 @@ using ll = long long;
 // @begin treap
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 using T = int;
-struct TreapItem {
+struct TreapNode {
   bool rev;
   T val;
   int prio;
   int size;
-  TreapItem *parent, *left, *right;
-  TreapItem(T v, int p)
+  TreapNode *parent, *left, *right;
+  TreapNode(T v, int p)
       : rev(false), val(v), prio(p), size(1), parent(nullptr), left(nullptr),
         right(nullptr) {}
-  TreapItem(T v) : TreapItem(v, rng()) {}
+  TreapNode(T v) : TreapNode(v, rng()) {}
 };
-using TreapP = TreapItem *;
+using TreapP = TreapNode *;
 int size(TreapP t) { return t == nullptr ? 0 : t->size; }
 int key(TreapP t) { return size(t->left) + 1; }
 void push(TreapP t) {

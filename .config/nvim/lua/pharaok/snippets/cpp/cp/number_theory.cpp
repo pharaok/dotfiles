@@ -6,7 +6,7 @@ using ll = long long;
 
 // clang-format off
 // @begin mint
-template <class T> T pow(T a, ll b) {
+template <class T> T binpow(T a, ll b) {
   T res = 1;
   while (b) {
     if (b & 1)
@@ -23,10 +23,13 @@ template <int M> struct ModInt {
     if (v < 0) v += M;
   }
 
+  bool operator==(ModInt o) { return v == o.v; };
+  bool operator!=(ModInt o) { return v != o.v; };
+
   ModInt &operator+=(ModInt o) { v = (v + o.v) % M; return *this; }
   ModInt &operator-=(ModInt o) { v = (v - o.v + M) % M; return *this; }
   ModInt &operator*=(ModInt o) { v = (1ll * v * o.v) % M; return *this; }
-  ModInt &operator/=(ModInt o) { return (*this *= pow(o, M - 2)); }
+  ModInt &operator/=(ModInt o) { return (*this *= binpow(o, M - 2)); }
 
   friend ModInt operator+(ModInt a, ModInt b) { return (a += b); }
   friend ModInt operator-(ModInt a, ModInt b) { return (a -= b); }
@@ -48,8 +51,8 @@ void initFact() {
   for (int i = 1; i < MAXF; i++)
     fact[i] = fact[i - 1] * i;
   factinv[MAXF - 1] = 1 / fact[MAXF - 1];
-  for (int i = MAXF - 1; i > 0; i--)
-    factinv[i - 1] = factinv[i] * i;
+  for (int i = MAXF - 2; i > 0; i--)
+    factinv[i] = factinv[i + 1] * i;
 }
 mint comb(int n, int k) {
   if (k < 0 || k > n)
